@@ -68,5 +68,6 @@ playerSpawnCoordinates = (Pt spawnX spawnY)
 startingPlayer = Plyr playerSpawnCoordinates
 startingProjectiles = []
 startingEnemies = [Enemy Cat 1 (Pt 200.0 0.0) (HBox (Pt 0.0 0.0) (Pt 15.0 (-20.0))) (Spd (-50.0)) (Score 20)]
+startingKeys = []
 
-initialGame = Game startingPlayer startingProjectiles startingEnemies
+initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys

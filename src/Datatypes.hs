@@ -1,8 +1,11 @@
 module Datatypes where
 
+import Graphics.Gloss.Interface.Pure.Game (SpecialKey)
+
 data MetalDogGame = Game {player::Player,
                           projectiles::[Projectile],
-                          enemies :: [Enemy]} 
+                          enemies :: [Enemy],
+                          keysPressed :: [SpecialKey]} 
                            
 
 data Gamestate = Playing
@@ -18,8 +21,8 @@ data Speed = Spd {speedPerTickX::Float}
 data HitBox = HBox {topLeft::Point, bottomRight::Point} 
 
 data Projectile = Prjtl {speed :: Speed,
-                          position :: Point,
-                          size :: Int }
+                         position :: Point,
+                         size :: Int}
                         
 data Weapon = Wpn {wDamage::Int, 
                    projectileSpeed::Speed,
