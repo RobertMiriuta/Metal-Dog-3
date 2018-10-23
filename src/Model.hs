@@ -15,9 +15,8 @@ initialState :: MetalDogGame
 initialState = initialGame
 
 movePlayerWithVector :: Player -> (Float, Float) -> Player
-movePlayerWithVector player (x,y) = Plyr (Pt (currentX + x) (currentY + y))
-  where currentX = pX (pPosition player)
-        currentY = pY (pPosition player)
+movePlayerWithVector player (x,y) = move player moveVector
+  where moveVector = Vctr x y 
 
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player
@@ -31,40 +30,32 @@ movePlayer player (x:xs)
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
 moveProjectiles time (x:xs)
-  |newX > boundaryX = moveProjectiles time xs
-  |otherwise = (Prjtl (Spd speedofX) newProjectilePosition sizeOfProjectile) : moveProjectiles time xs
+  |newX > boundaryX   = moveProjectiles time xs
+  |otherwise          = movedProjectile : moveProjectiles time xs
   where projectilePosition = getPos x
-        projectilePositionX = pX projectilePosition
-        projectilePositionY = pY projectilePosition
-        sizeOfProjectile = size x
-        speedofX = speedPerTickX (getSpeed x)
+        projectilePositionY = yP projectilePosition
+        projectileMoveVector = Vctr time projectilePositionY
+        movedProjectile = move x projectileMoveVector
         boundaryX = (fst windowSizeFloat) / 2
-        newX = time * speedofX + (pX projectilePosition)
-        newProjectilePosition = Pt newX projectilePositionY
+        newX = xP (getPos movedProjectile)
 
 moveEnemies :: Float -> [Enemy] -> [Enemy]
 moveEnemies _ [] = []
 moveEnemies time (x:xs)
-  |newX < boundaryX = moveEnemies time xs
-  |otherwise = (Enemy enemyKindX eHealth newEnemyPosition newHitboxOfEnemy (Spd speedofX) rewardX) : moveEnemies time xs
-  where enemyKindX = enemyKind x
-        eHealth = getHealth x
-        enemyPosition = ePosition x
-        enemyPositionX = pX enemyPosition
-        enemyPositionY = pY enemyPosition
+  |newX < boundaryX   = moveEnemies time xs
+  |otherwise          = movedEnemy: moveEnemies time xs
+  where enemyPosition = getPos x
+        enemyPositionX = xP enemyPosition
+        enemyPositionY = yP enemyPosition
         boundaryX = (fst windowSizeFloat) / (-2)
-        hitboxOfEnemy = eHitbox x
-        newHitboxOfEnemy = (HBox (Pt ((pX (topLeft hitboxOfEnemy)) + time * speedofX) (pY (topLeft hitboxOfEnemy)))
-                                 (Pt ((pX (bottomRight hitboxOfEnemy)) + time * speedofX) (pY (bottomRight hitboxOfEnemy))))
-        speedofX = speedPerTickX (eSpeed x)
-        rewardX = reward x
-        newX = time * speedofX + (pX enemyPosition)
-        newEnemyPosition = Pt newX enemyPositionY
+        enemyMoveVector = Vctr time enemyPositionY
+        movedEnemy = move x enemyMoveVector
+        newX = xP (getPos movedEnemy)
 
 
 fireBullet :: Player -> [SpecialKey] -> [Projectile]
 fireBullet player [] = []
 fireBullet player (x:xs)
-  |x == KeySpace = [standardProjectile (pPosition player)]
+  |x == KeySpace = [standardProjectile (getPos player)]
   |otherwise = fireBullet player xs
 

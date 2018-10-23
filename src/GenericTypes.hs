@@ -3,9 +3,9 @@
 
 module GenericTypes where
 
-  data Point = Pt {x::Float, y::Float}
+  data Point = Pt {xP::Float, yP::Float}
 
-  data Vector = Vctr {u::Float, v::Float}
+  data Vector = Vctr {uV::Float, vV::Float}
 
   data Speed = Spd {speedPerTickX::Float, speedPerTickY::Float}
 
@@ -22,14 +22,14 @@ module GenericTypes where
                 | l1y < r2y = False
                 | l2y < r1y = False
                 | otherwise = True
-                  where l1x = x (topLeft (getHitbox a))
-                        l2x = x (topLeft (getHitbox b))
-                        l1y = y (topLeft (getHitbox a))
-                        l2y = y (topLeft (getHitbox b))
-                        r1x = x (bottomRight (getHitbox a))
-                        r2x = x (bottomRight (getHitbox b))
-                        r1y = y (bottomRight (getHitbox a))
-                        r2y = y (bottomRight (getHitbox b))
+                  where l1x = xP (topLeft (getHitbox a))
+                        l2x = xP (topLeft (getHitbox b))
+                        l1y = yP (topLeft (getHitbox a))
+                        l2y = yP (topLeft (getHitbox b))
+                        r1x = xP (bottomRight (getHitbox a))
+                        r2x = xP (bottomRight (getHitbox b))
+                        r1y = yP (bottomRight (getHitbox a))
+                        r2y = yP (bottomRight (getHitbox b))
 
   class Damageable a where
     getHealth :: a -> Int
@@ -41,4 +41,4 @@ module GenericTypes where
     move :: a -> Vector -> a   --moves model and hitbox
 
   multVectorSpeed :: Vector -> Speed -> Vector
-  multVectorSpeed vec speed = Vctr ((u vec) * (speedPerTickX speed)) ((v vec) * (speedPerTickY speed))
+  multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))

@@ -28,13 +28,13 @@ module Enemy where
     getPos = position
     getSpeed = speed
     move enmy dir = enmy {position = newPos, hitbox = newHitbox}
-      where newPosX = (x (position enmy)) + (u moveVec)
-            newPosY = (y (position enmy)) + (v moveVec)
+      where newPosX = (xP (position enmy)) + (uV moveVec)
+            newPosY = (yP (position enmy)) + (vV moveVec)
             newPos =  Pt newPosX newPosY
-            newBoxXTL = (x (topLeft (hitbox enmy))) + (u moveVec)
-            newBoxYTL = (y (topLeft (hitbox enmy))) + (v moveVec)
-            newBoxXBR = (x (bottomRight (hitbox enmy))) + (u moveVec)
-            newBoxYBR = (y (bottomRight (hitbox enmy))) + (v moveVec)
+            newBoxXTL = (xP (topLeft (hitbox enmy))) + (uV moveVec)
+            newBoxYTL = (yP (topLeft (hitbox enmy))) + (vV moveVec)
+            newBoxXBR = (xP (bottomRight (hitbox enmy))) + (uV moveVec)
+            newBoxYBR = (yP (bottomRight (hitbox enmy))) + (vV moveVec)
             newHitTL = Pt newBoxXTL newBoxYTL
             newHitBR = Pt newBoxXBR newBoxYBR
             newHitbox = HBox newHitTL newHitBR
