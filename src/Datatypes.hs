@@ -1,5 +1,9 @@
 module Datatypes where
 
+import Projectile
+import Player
+import Enemy
+
 data MetalDogGame = Game {player::Player,
                           projectiles::[Projectile],
                           enemies :: [Enemy],
@@ -18,12 +22,6 @@ data Speed = Spd {speedPerTickX::Float}
 
 --All hitboxes are rectangles
 data HitBox = HBox {topLeft::Point, bottomRight::Point}
-
-data Projectile = Prjtl {speed :: Speed,
-                         position :: Point,
-                         --damage :: Int,
-                         size :: Int,
-                         hitBox :: HitBox}
 
 data Weapon = Wpn {projectile::Projectile
                    rechargeTime::Int}
@@ -56,8 +54,8 @@ class Damageable a where
 
 class Moveable a where
   getPos :: a -> Point
-  move :: a -> Vector -> a   --moves model and hitbox
   getSpeed :: a -> Speed
+  move :: a -> Vector -> a   --moves model and hitbox
 
 multVectorSpeed :: Vector -> Speed -> Vector
 multVectorSpeed vec speed = Vctr ((u vec) * (speedPerTickX speed)) ((v vec) * (speedPerTickY speed))

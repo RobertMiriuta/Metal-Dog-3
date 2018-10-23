@@ -25,10 +25,10 @@ module Enemy where
     getPos = position
     getSpeed = speed
     move enmy vec = Enemy (enemyKind enmy) (health enmy) newPos newHitbox (speed enmy) (reward enmy)
-      where newPosX = x . position p + u moveVec
-            newPosY = y . position p + v moveVec
+      where newPosX = x . position enmy + u moveVec
+            newPosY = y . position enmy + v moveVec
             newPos =  Point newPosX newPosY
-            newHitTL = Point (x . topLeft . hitbox p + u moveVec) (y . topLeft . hitbox p + v moveVec)
-            newHitBR = Point (x . bottomRight . hitbox p + u moveVec) (y . bottomRight . hitbox p + v moveVec)
+            newHitTL = Point (x . topLeft . hitbox enmy + u moveVec) (y . topLeft . hitbox enmy + v moveVec)
+            newHitBR = Point (x . bottomRight . hitbox enmy + u moveVec) (y . bottomRight . hitbox enmy + v moveVec)
             newHitbox = HBox newHitTL newHitBR
-            moveVec = multVectorSpeed dir (getSpeed p)
+            moveVec = multVectorSpeed dir (getSpeed enmy)
