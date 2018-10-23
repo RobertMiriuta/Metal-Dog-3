@@ -21,7 +21,7 @@ data HitBox = HBox {topLeft::Point, bottomRight::Point}
 
 data Projectile = Prjtl {speed :: Speed,
                          position :: Point,
-                         damage :: Int,
+                         --damage :: Int,
                          size :: Int,
                          hitBox :: HitBox}
 
