@@ -11,11 +11,14 @@ view :: MetalDogGame -> IO Picture
 view = return . viewPure
 
 viewPure :: MetalDogGame -> Picture
-viewPure (Game player listOfProjectiles listOfEnemies) = pics
-  where playerShip = renderPlayer player
-        projectiles = renderProjectiles listOfProjectiles
-        enemies = renderEnemies listOfEnemies
-        pics = pictures ([playerShip] ++ projectiles ++ enemies)
+viewPure game = pics
+  where currentPlayer = player game
+        listOfProjectiles = projectiles game
+        listOfEnemies = enemies game
+        renderedplayerShip = renderPlayer currentPlayer
+        renderedprojectiles = renderProjectiles listOfProjectiles
+        renderedenemies = renderEnemies listOfEnemies
+        pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies)
         
 renderPlayer :: Player -> Picture
 renderPlayer (Plyr (Pt x y)) = translate x y $ drawPlayer

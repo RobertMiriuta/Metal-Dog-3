@@ -11,20 +11,47 @@ import System.Random
 
 -- | Handle one iteration of the game
 step :: Float -> MetalDogGame -> IO MetalDogGame
-step time (Game player listOfProjectiles listOfEnemies) = return (Game player (moveProjectiles time listOfProjectiles) (moveEnemies time listOfEnemies))
+step time game = return updatedGame
+  where listOfEnemies = enemies game
+        newProjectiles = fireBullet currentPlayer allPressedKeys
+        listOfProjectiles = newProjectiles ++ (projectiles game)
+        currentPlayer = player game
+        allPressedKeys = keysPressed game
+        movedPlayer = movePlayer currentPlayer allPressedKeys
+        movedEnemies = moveEnemies time listOfEnemies
+        movedProjectiles = moveProjectiles time listOfProjectiles
+        updatedGame = game {player = movedPlayer, enemies = movedEnemies, projectiles = movedProjectiles}
 
 -- | Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame
 input e gstate = return (inputKey e gstate)
 
 inputKey :: Event -> MetalDogGame -> MetalDogGame
-inputKey (EventKey (SpecialKey key) Down _ _) game@(Game player listOfProjectiles listOfEnemies) = case key of
+inputKey (EventKey (SpecialKey key) Down _ _) game = case key of
         -- Handles the events for the arrow keys
-        KeySpace -> fireBullet game
-        KeyUp    -> (Game (movePlayer player (0.0, 1.0)) listOfProjectiles listOfEnemies)
-        KeyDown  -> (Game (movePlayer player (0.0, (-1.0))) listOfProjectiles listOfEnemies)
-        KeyLeft  -> (Game (movePlayer player ((-1.0), 0.0)) listOfProjectiles listOfEnemies)
-        KeyRight -> (Game (movePlayer player (1.0, 0.0)) listOfProjectiles listOfEnemies)
+        KeySpace -> game {keysPressed = newKeys}
+        KeyUp    -> game {keysPressed = newKeys}
+        KeyDown  -> game {keysPressed = newKeys}
+        KeyLeft  -> game {keysPressed = newKeys}
+        KeyRight -> game {keysPressed = newKeys}
         _ -> game
+        where originalKeys = keysPressed game
+              newKeys = key : originalKeys
+inputKey (EventKey (SpecialKey key) Up _ _) game = case key of
+        -- Handles the events for the arrow keys
+        KeySpace -> game {keysPressed = removeSpace}
+        KeyUp    -> game {keysPressed = removeUp}
+        KeyDown  -> game {keysPressed = removeDown}
+        KeyLeft  -> game {keysPressed = removeLeft}
+        KeyRight -> game {keysPressed = removeRight}
+        _ -> game
+        where originalKeys = keysPressed game
+              newKeys a = filter (\x -> x /= a) originalKeys
+              removeSpace = newKeys KeySpace
+              removeUp = newKeys KeyUp
+              removeDown = newKeys KeyDown
+              removeLeft = newKeys KeyLeft
+              removeRight = newKeys KeyRight
+
 inputKey _ game = game -- Otherwise keep the same
 

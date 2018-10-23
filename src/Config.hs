@@ -81,8 +81,11 @@ standardPlayerHitbox = HBox (Pt 0.0 0.0) (Pt 20.0 20.0)
 standardPlayerHealth :: Int
 standardPlayerHealth = 1
 
+-- initial values
 startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth
 startingProjectiles = []
 startingEnemies = [Enemy Cat 1 (Pt 200.0 0.0) (HBox (Pt 0.0 0.0) (Pt 15.0 (-20.0))) (Spd (-50.0) 0.0) (Score 20)]
+startingKeys = []
 
-initialGame = Game startingPlayer startingProjectiles startingEnemies
+initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys
+

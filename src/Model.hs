@@ -8,14 +8,25 @@ import Enemy
 import Projectile
 import GameTypes
 import Config
+import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, KeyRight, KeySpace))
+
 
 initialState :: MetalDogGame
 initialState = initialGame
 
-movePlayer :: Player -> (Float, Float) -> Player
-movePlayer player (x,y) = Plyr (Pt (currentX + x) (currentY + y))
+movePlayerWithVector :: Player -> (Float, Float) -> Player
+movePlayerWithVector player (x,y) = Plyr (Pt (currentX + x) (currentY + y))
   where currentX = pX (pPosition player)
         currentY = pY (pPosition player)
+
+movePlayer :: Player -> [SpecialKey] -> Player
+movePlayer player [] = player
+movePlayer player (x:xs)
+  |x == KeyUp     = movePlayer (movePlayerWithVector player (0.0, 1.0)) xs
+  |x == KeyDown   = movePlayer (movePlayerWithVector player (0.0, (-1.0))) xs
+  |x == KeyLeft   = movePlayer (movePlayerWithVector player ((-1.0), 0.0)) xs
+  |x == KeyRight  = movePlayer (movePlayerWithVector player (1.0, 0.0)) xs
+  |otherwise = movePlayer player xs 
 
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
@@ -50,7 +61,10 @@ moveEnemies time (x:xs)
         newX = time * speedofX + (pX enemyPosition)
         newEnemyPosition = Pt newX enemyPositionY
 
-fireBullet :: MetalDogGame -> MetalDogGame
-fireBullet (Game (Plyr(point)) listOfProjectiles listOfEnemies) = Game (Plyr point) newListOfProjectiles listOfEnemies
-     where
-        newListOfProjectiles = standardProjectile point : listOfProjectiles
+
+fireBullet :: Player -> [SpecialKey] -> [Projectile]
+fireBullet player [] = []
+fireBullet player (x:xs)
+  |x == KeySpace = [standardProjectile (pPosition player)]
+  |otherwise = fireBullet player xs
+
