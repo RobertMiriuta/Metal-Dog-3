@@ -1,12 +1,5 @@
 module Datatypes where
 
-
-windowSizeFloat :: (Float, Float)
-windowSizeFloat = (800.0, 400.0)
-
-windowSizeInt :: (Int, Int)
-windowSizeInt = (800, 400)
-
 data MetalDogGame = Game {player::Player,
                           projectiles::[Projectile],
                           enemies :: [Enemy]} 
