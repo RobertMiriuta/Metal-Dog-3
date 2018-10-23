@@ -1,24 +1,16 @@
-module Player where
+module Projectile where
 
   import GenericTypes
 
-  data Player = Plyr {position::Point,
-                      movementSpeed::Speed,
-                      hitbox::Hitbox,
-                      health::Int} --activeWeapon::Weapon
+  data Projectile = Prjtl {speed :: Speed,
+                           position :: Point,
+                           --damage :: Int,
+                           size :: Int,
+                           hitbox :: Hitbox}
 
-  instance Collidable Player where
-    getHitbox = hitbox
-
-  instance Damageable Player where
-    getHealth = health
-    takeDamage p dmg | newHealth <= 0 = Nothing
-                     | otherwise = Just (p {health = newHealth})
-                        where newHealth = (getHealth p) - dmg
-
-  instance Moveable Player where
+  instance Moveable Projectile where
     getPos = position
-    getSpeed = movementSpeed
+    getSpeed = speed
     move p dir = p {position = newPos, hitbox = newHitbox}
       where newPosX = (xP (position p)) + (uV moveVec)
             newPosY = (yP (position p)) + (vV moveVec)

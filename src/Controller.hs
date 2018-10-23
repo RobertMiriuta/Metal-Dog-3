@@ -3,8 +3,8 @@
 module Controller where
 
 import Model
-import Datatypes
-
+import GameTypes
+import GenericTypes
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random

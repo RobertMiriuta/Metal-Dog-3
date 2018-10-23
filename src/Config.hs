@@ -1,7 +1,12 @@
 module Config where
 
 import Graphics.Gloss
-import Datatypes
+import GameTypes
+import GenericTypes
+import Projectile
+import Enemy
+import Player
+
 --Window settings
 
 windowSizeFloat :: (Float, Float)
@@ -19,16 +24,16 @@ enemyFireWorkPicture :: Picture
 enemyFireWorkPicture = color enemyColor $ Polygon [(0,0),(10,10),(10,5),(25,5),(25,-5),(10,-5),(10,-10)]
 
 enemyCatPicture :: Picture
-enemyCatPicture = color enemyColor $ Pictures [Polygon [(0,0),(0,-5),(5,-5)], 
-                                               Polygon[(10,-5),(15,0),(15,-5)], 
+enemyCatPicture = color enemyColor $ Pictures [Polygon [(0,0),(0,-5),(5,-5)],
+                                               Polygon[(10,-5),(15,0),(15,-5)],
                                                Polygon[(0,-5),(15,-5),(15,-15),(10,-20),(5,-20),(0,-15)]]
-enemyPostmanPicture :: Picture 
-enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 5 $ Circle 5), 
+enemyPostmanPicture :: Picture
+enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 5 $ Circle 5),
                                                    Polygon[(0,0),(0,-15),(3,-15),(3,-5),(5,-5),(5,-25),(8,-25),(8,-15),(12,-15),(12,-25),(15,-25),(15,-5),(17,-5),(17,-15),(20,-15),(20,0)]]
 
 enemyCarPicture :: Picture
 enemyCarPicture = color enemyColor $ Pictures [Polygon[(0,0),(0,(-5)),(25,(-5)),(25,0),(20,0),(15,5),(10,5),(5,0)],
-                                               (translate 8 (-5) $ Circle 3), 
+                                               (translate 8 (-5) $ Circle 3),
                                                (translate 17 (-5) $ Circle 3)]
 
 enemyVacuumCleanerPicture :: Picture
@@ -49,25 +54,38 @@ projectileColor = red
 projectilePicture :: Picture
 projectilePicture = color projectileColor $ rectangleSolid 4 4
 
-standardProjectile :: Datatypes.Point -> Projectile
-standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize
+standardProjectile :: GenericTypes.Point -> Projectile
+standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize standardProjectileHitbox
 
 standardProjectileSize :: Int
 standardProjectileSize = 4
 
 standardProjectileSpeed :: Speed
-standardProjectileSpeed = Spd 200.0
+standardProjectileSpeed = Spd 200.0 0.0
 
+standardProjectileHitbox :: Hitbox
+standardProjectileHitbox = HBox (Pt 0.0 0.0) (Pt 4.0 4.0)
 
 --initial values
-playerSpawnCoordinates :: Datatypes.Point
+playerSpawnCoordinates :: GenericTypes.Point
 playerSpawnCoordinates = (Pt spawnX spawnY)
   where spawnX = (-(fst windowSizeFloat) / 2) + 50 --50 pixels off of the left border
         spawnY = 0.0 --middle of the screen
 
-startingPlayer = Plyr playerSpawnCoordinates
+standardPlayerSpeed :: Speed
+standardPlayerSpeed = Spd 2.0 2.0
+
+standardPlayerHitbox :: Hitbox
+standardPlayerHitbox = HBox (Pt 0.0 0.0) (Pt 20.0 20.0)
+
+standardPlayerHealth :: Int
+standardPlayerHealth = 1
+
+-- initial values
+startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth
 startingProjectiles = []
-startingEnemies = [Enemy Cat 1 (Pt 200.0 0.0) (HBox (Pt 0.0 0.0) (Pt 15.0 (-20.0))) (Spd (-50.0)) (Score 20)]
+startingEnemies = [Enemy Cat 1 (Pt 200.0 0.0) (HBox (Pt 0.0 0.0) (Pt 15.0 (-20.0))) (Spd (-50.0) 0.0) (Score 20)]
 startingKeys = []
 
 initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys
+

@@ -1,8 +1,8 @@
 module Enemy where
 
-  import Datatypes
+  import GenericTypes
 
-  data Enemy = Enemy { enemyKind :: EnemyKind
+  data Enemy = Enemy { enemyKind :: EnemyKind,
                        health::Int,
                        position::Point,
                        hitbox::Hitbox,
@@ -20,15 +20,22 @@ module Enemy where
 
   instance Damageable Enemy where
     getHealth = health
+    takeDamage enmy dmg | newHealth <= 0 = Nothing
+                        | otherwise = Just (enmy {health = newHealth})
+                        where newHealth = (getHealth enmy) - dmg
 
-  instance Moveable Player where
+  instance Moveable Enemy where
     getPos = position
     getSpeed = speed
-    move enmy vec = Enemy (enemyKind enmy) (health enmy) newPos newHitbox (speed enmy) (reward enmy)
-      where newPosX = x . position p + u moveVec
-            newPosY = y . position p + v moveVec
-            newPos =  Point newPosX newPosY
-            newHitTL = Point (x . topLeft . hitbox p + u moveVec) (y . topLeft . hitbox p + v moveVec)
-            newHitBR = Point (x . bottomRight . hitbox p + u moveVec) (y . bottomRight . hitbox p + v moveVec)
+    move enmy dir = enmy {position = newPos, hitbox = newHitbox}
+      where newPosX = (xP (position enmy)) + (uV moveVec)
+            newPosY = (yP (position enmy)) + (vV moveVec)
+            newPos =  Pt newPosX newPosY
+            newBoxXTL = (xP (topLeft (hitbox enmy))) + (uV moveVec)
+            newBoxYTL = (yP (topLeft (hitbox enmy))) + (vV moveVec)
+            newBoxXBR = (xP (bottomRight (hitbox enmy))) + (uV moveVec)
+            newBoxYBR = (yP (bottomRight (hitbox enmy))) + (vV moveVec)
+            newHitTL = Pt newBoxXTL newBoxYTL
+            newHitBR = Pt newBoxXBR newBoxYBR
             newHitbox = HBox newHitTL newHitBR
-            moveVec = multVectorSpeed dir (getSpeed p)
+            moveVec = multVectorSpeed dir (getSpeed enmy)
