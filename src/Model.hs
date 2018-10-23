@@ -2,7 +2,11 @@
 --   which represent the state of the game
 module Model where
 
-import Datatypes
+import GenericTypes
+import Player
+import Enemy
+import Projectile
+import GameTypes
 import Config
 
 initialState :: MetalDogGame
@@ -15,31 +19,31 @@ movePlayer player (x,y) = Plyr (Pt (currentX + x) (currentY + y))
 
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
-moveProjectiles time (x:xs) 
+moveProjectiles time (x:xs)
   |newX > boundaryX = moveProjectiles time xs
   |otherwise = (Prjtl (Spd speedofX) newProjectilePosition sizeOfProjectile) : moveProjectiles time xs
-  where projectilePosition = position x
+  where projectilePosition = getPos x
         projectilePositionX = pX projectilePosition
         projectilePositionY = pY projectilePosition
         sizeOfProjectile = size x
-        speedofX = speedPerTickX (speed x)
+        speedofX = speedPerTickX (getSpeed x)
         boundaryX = (fst windowSizeFloat) / 2
         newX = time * speedofX + (pX projectilePosition)
         newProjectilePosition = Pt newX projectilePositionY
 
 moveEnemies :: Float -> [Enemy] -> [Enemy]
 moveEnemies _ [] = []
-moveEnemies time (x:xs) 
+moveEnemies time (x:xs)
   |newX < boundaryX = moveEnemies time xs
   |otherwise = (Enemy enemyKindX eHealth newEnemyPosition newHitboxOfEnemy (Spd speedofX) rewardX) : moveEnemies time xs
   where enemyKindX = enemyKind x
-        eHealth = health x
+        eHealth = getHealth x
         enemyPosition = ePosition x
         enemyPositionX = pX enemyPosition
         enemyPositionY = pY enemyPosition
         boundaryX = (fst windowSizeFloat) / (-2)
         hitboxOfEnemy = eHitbox x
-        newHitboxOfEnemy = (HBox (Pt ((pX (topLeft hitboxOfEnemy)) + time * speedofX) (pY (topLeft hitboxOfEnemy))) 
+        newHitboxOfEnemy = (HBox (Pt ((pX (topLeft hitboxOfEnemy)) + time * speedofX) (pY (topLeft hitboxOfEnemy)))
                                  (Pt ((pX (bottomRight hitboxOfEnemy)) + time * speedofX) (pY (bottomRight hitboxOfEnemy))))
         speedofX = speedPerTickX (eSpeed x)
         rewardX = reward x
