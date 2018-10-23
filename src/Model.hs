@@ -40,7 +40,7 @@ moveEnemies time (x:xs)
         enemyPositionX = pX enemyPosition
         enemyPositionY = pY enemyPosition
         hitboxOfEnemy = eHitbox x
-        newHitboxOfEnemy = (HBox (Pt ((pX (topleft hitboxOfEnemy)) + time * speedofX) (pY (topleft hitboxOfEnemy))) 
+        newHitboxOfEnemy = (HBox (Pt ((pX (topLeft hitboxOfEnemy)) + time * speedofX) (pY (topLeft hitboxOfEnemy))) 
                                  (Pt ((pX (bottomRight hitboxOfEnemy)) + time * speedofX) (pY (bottomRight hitboxOfEnemy))))
         speedofX = speedPerTickX (eSpeed x)
         rewardX = reward x

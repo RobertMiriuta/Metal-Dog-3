@@ -22,7 +22,7 @@ data Vector = Vctr {vX::Float, vY::Float}
 data Speed = Spd {speedPerTickX::Float}
 
 --All hitboxes are rectangles
-data HitBox = HBox {topleft::Point, bottomRight::Point} 
+data HitBox = HBox {topLeft::Point, bottomRight::Point} 
 
 data Projectile = Prjtl {speed :: Speed,
                           position :: Point,
