@@ -47,13 +47,13 @@ playerPicture = color playerColor $ Pictures[Polygon[(0,0),(10,-10),(20,-10),(30
 projectileColor = red
 
 projectilePicture :: Picture
-projectilePicture = color projectileColor $ rectangleSolid 4 4
+projectilePicture = color projectileColor $ rectangleSolid standardProjectileSize standardProjectileSize
 
 standardProjectile :: Datatypes.Point -> Projectile
 standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize
 
 standardProjectileSize :: Int
-standardProjectileSize = 5
+standardProjectileSize = 4
 
 standardProjectileSpeed :: Speed
 standardProjectileSpeed = Spd 200.0
