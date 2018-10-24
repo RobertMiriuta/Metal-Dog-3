@@ -27,6 +27,7 @@ module Enemy where
   instance Moveable Enemy where
     getPos = position
     getSpeed = speed
+    getSize = bottomRight . hitbox
     move enmy dir = enmy {position = newPos, hitbox = newHitbox}
       where newPosX = (xP (position enmy)) + (uV moveVec)
             newPosY = (yP (position enmy)) + (vV moveVec)

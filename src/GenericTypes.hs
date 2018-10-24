@@ -1,6 +1,3 @@
-
-{-# LANGUAGE MultiParamTypeClasses #-}
-
 module GenericTypes where
 
   data Point = Pt {xP::Float, yP::Float}
@@ -35,10 +32,25 @@ module GenericTypes where
     getHealth :: a -> Int
     takeDamage :: a -> Int -> Maybe a
 
+  --All moveable objects have a size associated with them
+  --this is an extra requirement for the bounds calculations
   class Moveable a where
     getPos :: a -> Point
     getSpeed :: a -> Speed
+    getSize :: a -> Point      --returns the bottom right corner pixel of the model
     move :: a -> Vector -> a   --moves model and hitbox
+    isOutOfBounds :: a -> (Float, Float) -> Bool
+    isOutOfBounds a windowSize | xCo > widthHalf = True    --out to the right
+                               | yCo < heightHalf = True   --out to the bottom
+                               | xSz < -widthHalf = True   --out to the left
+                               | ySz < -heightHalf = True  --out to the top
+                               | otherwise = False
+                                 where xCo = xP (getPos a)
+                                       yCo = yP (getPos a)
+                                       xSz = xP (getSize a)
+                                       ySz = yP (getSize a)
+                                       widthHalf = (fst windowSize)/2
+                                       heightHalf = (snd windowSize)/2
 
   multVectorSpeed :: Vector -> Speed -> Vector
   multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))

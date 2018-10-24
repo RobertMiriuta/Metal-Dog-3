@@ -16,7 +16,7 @@ initialState = initialGame
 
 movePlayerWithVector :: Player -> (Float, Float) -> Player
 movePlayerWithVector player (x,y) = move player moveVector
-  where moveVector = Vctr x y 
+  where moveVector = Vctr x y
 
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player
@@ -25,7 +25,7 @@ movePlayer player (x:xs)
   |x == KeyDown   = movePlayer (movePlayerWithVector player (0.0, (-1.0))) xs
   |x == KeyLeft   = movePlayer (movePlayerWithVector player ((-1.0), 0.0)) xs
   |x == KeyRight  = movePlayer (movePlayerWithVector player (1.0, 0.0)) xs
-  |otherwise = movePlayer player xs 
+  |otherwise = movePlayer player xs
 
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
@@ -58,4 +58,3 @@ fireBullet player [] = []
 fireBullet player (x:xs)
   |x == KeySpace = [standardProjectile (getPos player)]
   |otherwise = fireBullet player xs
-

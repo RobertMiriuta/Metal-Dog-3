@@ -88,4 +88,3 @@ startingEnemies = [Enemy Cat 1 (Pt 200.0 0.0) (HBox (Pt 0.0 0.0) (Pt 15.0 (-20.0
 startingKeys = []
 
 initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys
-

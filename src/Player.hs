@@ -19,6 +19,7 @@ module Player where
   instance Moveable Player where
     getPos = position
     getSpeed = movementSpeed
+    getSize = bottomRight . hitbox
     move p dir = p {position = newPos, hitbox = newHitbox}
       where newPosX = (xP (position p)) + (uV moveVec)
             newPosY = (yP (position p)) + (vV moveVec)
