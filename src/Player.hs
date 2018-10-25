@@ -24,10 +24,10 @@ module Player where
       where newPosX = (xP (position p)) + (uV moveVec)
             newPosY = (yP (position p)) + (vV moveVec)
             newPos =  Pt newPosX newPosY
-            newBoxXTL = (xP (topLeft (hitbox p))) + (uV moveVec)
-            newBoxYTL = (yP (topLeft (hitbox p))) + (vV moveVec)
-            newBoxXBR = (xP (bottomRight (hitbox p))) + (uV moveVec)
-            newBoxYBR = (yP (bottomRight (hitbox p))) + (vV moveVec)
+            newBoxXTL = (xP (topLeft standardPlayerHitbox)) + newPosX
+            newBoxYTL = (yP (topLeft standardPlayerHitbox)) + newPosY
+            newBoxXBR = (xP (bottomRight standardPlayerHitbox)) + newPosX
+            newBoxYBR = (yP (bottomRight standardPlayerHitbox)) + newPosY
             newHitTL = Pt newBoxXTL newBoxYTL
             newHitBR = Pt newBoxXBR newBoxYBR
             newHitbox = HBox newHitTL newHitBR

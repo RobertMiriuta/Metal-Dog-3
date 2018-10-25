@@ -11,6 +11,9 @@ module GenericTypes where
 
   data Score = Score Int
 
+  standardPlayerHitbox :: Hitbox
+  standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
+
   class Collidable a where
     getHitbox :: a -> Hitbox
     isHitBy :: Collidable b => a -> b -> Bool

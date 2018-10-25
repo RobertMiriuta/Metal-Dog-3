@@ -2,7 +2,7 @@ module Config where
 
 import Graphics.Gloss
 import GameTypes
-import GenericTypes
+import GenericTypes hiding (standardPlayerHitbox)
 import Projectile
 import Enemy
 import Player
@@ -76,7 +76,7 @@ standardPlayerSpeed :: Speed
 standardPlayerSpeed = Spd 2.0 2.0
 
 standardPlayerHitbox :: Hitbox
-standardPlayerHitbox = HBox (Pt 0.0 20.0) (Pt 30.0 (10.0))
+standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
 
 standardPlayerHealth :: Int
 standardPlayerHealth = 1

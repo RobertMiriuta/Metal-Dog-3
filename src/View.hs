@@ -46,7 +46,7 @@ drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP 
   where ptTopLeft = topLeft (getHitbox a)
         ptTopRight = (xP ptBottomRight, yP ptTopLeft)
         ptBottomRight = bottomRight (getHitbox a)
-        ptBottomLeft = (yP ptBottomRight, xP ptTopLeft)
+        ptBottomLeft = (xP ptTopLeft, yP ptBottomRight)
 
 renderProjectiles :: [Projectile] -> [Picture]
 renderProjectiles [] = []
