@@ -41,7 +41,7 @@ renderPlayer player = Pictures[translate xTrans yTrans $ drawPlayer, drawHitBox 
   where xTrans = xP (getPos player)
         yTrans = yP (getPos player)
 
-drawHitBox :: Moveable a => Collidable a => a -> Picture
+drawHitBox :: Moveable a => a -> Picture
 drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP ptBottomRight, yP ptBottomRight), ptBottomLeft, (xP ptTopLeft, yP ptTopLeft)]
   where ptTopLeft = topLeft (getHitbox a)
         ptTopRight = (xP ptBottomRight, yP ptTopLeft)

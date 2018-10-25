@@ -45,7 +45,7 @@ enemyVacuumCleanerPicture = Polygon[(0,0),(0,-5),(10,-5),(10,0),(20,5),(20,15),(
 playerColor = light (light blue)
 
 playerPicture :: Picture
-playerPicture = color playerColor $ Pictures[Polygon[(0,0),(10,-10),(20,-10),(30,0)], translate 15 0 $ scale 1 2 $ Circle 5]
+playerPicture = color playerColor $ Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 15 (-10) $ scale 1 2 $ Circle 5]
 
 --Projectile appearance and other values
 

@@ -15,9 +15,6 @@ module Enemy where
                 |Car
                 |VacuumCleaner
 
-  instance Collidable Enemy where
-    getHitbox = hitbox
-
   instance Damageable Enemy where
     getHealth = health
     takeDamage enmy dmg | newHealth <= 0 = Nothing
@@ -25,6 +22,7 @@ module Enemy where
                         where newHealth = (getHealth enmy) - dmg
 
   instance Moveable Enemy where
+    getHitbox = hitbox
     getPos = topLeft . hitbox
     getSpeed = speed
     getSize = bottomRight . hitbox

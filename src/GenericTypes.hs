@@ -14,9 +14,20 @@ module GenericTypes where
   standardPlayerHitbox :: Hitbox
   standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
 
-  class Collidable a where
+  class Damageable a where
+    getHealth :: a -> Int
+    takeDamage :: a -> Int -> Maybe a
+
+  --All moveable objects have a size associated with them
+  --this is an extra requirement for the bounds calculations
+  class Moveable a where
+    getPos :: a -> Point
+    getSpeed :: a -> Speed
+    getSize :: a -> Point      --returns the bottom right corner pixel of the hitbox
+    move :: a -> Vector -> a   --moves model and hitbox
+    isOutOfBounds :: a -> (Float, Float) -> Bool
     getHitbox :: a -> Hitbox
-    isHitBy :: Collidable b => a -> b -> Bool
+    isHitBy :: Moveable b => a -> b -> Bool
     isHitBy a b | l1x > r2x = False
                 | l2x > r1x = False
                 | l1y < r2y = False
@@ -30,19 +41,6 @@ module GenericTypes where
                         r2x = xP (bottomRight (getHitbox b))
                         r1y = yP (bottomRight (getHitbox a))
                         r2y = yP (bottomRight (getHitbox b))
-
-  class Damageable a where
-    getHealth :: a -> Int
-    takeDamage :: a -> Int -> Maybe a
-
-  --All moveable objects have a size associated with them
-  --this is an extra requirement for the bounds calculations
-  class Moveable a where
-    getPos :: a -> Point
-    getSpeed :: a -> Speed
-    getSize :: a -> Point      --returns the bottom right corner pixel of the hitbox
-    move :: a -> Vector -> a   --moves model and hitbox
-    isOutOfBounds :: a -> (Float, Float) -> Bool
 
   multVectorSpeed :: Vector -> Speed -> Vector
   multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))

@@ -7,16 +7,15 @@ module Player where
                       hitbox::Hitbox,
                       health::Int} --activeWeapon::Weapon
 
-  instance Collidable Player where
-    getHitbox = hitbox
-
   instance Damageable Player where
     getHealth = health
     takeDamage p dmg | newHealth <= 0 = Nothing
                      | otherwise = Just (p {health = newHealth})
                         where newHealth = (getHealth p) - dmg
 
+  --every moveable object has a size and hitbox and can collide with other moveable objects
   instance Moveable Player where
+    getHitbox = hitbox
     getPos = topLeft . hitbox
     getSpeed = movementSpeed
     getSize = bottomRight . hitbox

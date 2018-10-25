@@ -9,6 +9,7 @@ module Projectile where
                            hitbox :: Hitbox}
 
   instance Moveable Projectile where
+    getHitbox = hitbox
     getPos = position
     getSpeed = speed
     getSize = bottomRight . hitbox
@@ -35,7 +36,3 @@ module Projectile where
                                        ySz = yP (getSize a)
                                        widthHalf = (fst windowSize)/2
                                        heightHalf = (snd windowSize)/2
-
-  instance Collidable Projectile where
-    getHitbox = hitbox
-
