@@ -21,23 +21,23 @@ windowSizeInt = (800, 400)
 enemyColor = green
 
 enemyFireWorkPicture :: Picture
-enemyFireWorkPicture = color enemyColor $ Polygon [(0,0),(10,10),(10,5),(25,5),(25,-5),(10,-5),(10,-10)]
+enemyFireWorkPicture = color enemyColor $ Polygon [(0,-10),(10,0),(10,-5),(25,-5),(25,-15),(10,-15),(10,-20)]
 
 enemyCatPicture :: Picture
 enemyCatPicture = color enemyColor $ Pictures [Polygon [(0,0),(0,-5),(5,-5)],
                                                Polygon[(10,-5),(15,0),(15,-5)],
                                                Polygon[(0,-5),(15,-5),(15,-15),(10,-20),(5,-20),(0,-15)]]
 enemyPostmanPicture :: Picture
-enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 5 $ Circle 5),
-                                                   Polygon[(0,0),(0,-15),(3,-15),(3,-5),(5,-5),(5,-25),(8,-25),(8,-15),(12,-15),(12,-25),(15,-25),(15,-5),(17,-5),(17,-15),(20,-15),(20,0)]]
+enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 (-5) $ Circle 5),
+                                                   Polygon[(0,-10),(0,-25),(3,-25),(3,-15),(5,-15),(5,-35),(8,-35),(8,-25),(12,-25),(12,-35),(15,-35),(15,-15),(17,-15),(17,-25),(20,-25),(20,-10)]]
 
 enemyCarPicture :: Picture
-enemyCarPicture = color enemyColor $ Pictures [Polygon[(0,0),(0,(-5)),(25,(-5)),(25,0),(20,0),(15,5),(10,5),(5,0)],
-                                               (translate 8 (-5) $ Circle 3),
-                                               (translate 17 (-5) $ Circle 3)]
+enemyCarPicture = color enemyColor $ Pictures [Polygon[(0,-5),(0,-10),(25,-10),(25,-5),(20,-5),(15,0),(10,0),(5,-5)],
+                                               (translate 8 (-10) $ Circle 3),
+                                               (translate 17 (-10) $ Circle 3)]
 
 enemyVacuumCleanerPicture :: Picture
-enemyVacuumCleanerPicture = Polygon[(0,0),(0,-5),(10,-5),(10,0),(20,5),(20,15),(25,15),(25,20),(20,20),(15,15),(5,0),(0,0)]
+enemyVacuumCleanerPicture = Polygon[(0,-20),(0,-25),(10,-25),(10,-20),(20,-15),(20,-5),(25,-5),(25,0),(20,0),(15,-5),(5,-20),(0,-20)]
 
 
 --Player appearance and other values and ini

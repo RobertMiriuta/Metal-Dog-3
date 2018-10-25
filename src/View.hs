@@ -50,7 +50,7 @@ drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP 
 
 renderProjectiles :: [Projectile] -> [Picture]
 renderProjectiles [] = []
-renderProjectiles (x:xs) = (translate projectilepositionX projectilepositionY $ drawProjectile) : renderProjectiles xs
+renderProjectiles (x:xs) = Pictures[(translate projectilepositionX projectilepositionY $ drawProjectile), drawHitBox x] : renderProjectiles xs
   where projectilePosition = getPos x
         projectilepositionX = xP projectilePosition
         projectilepositionY = yP projectilePosition
