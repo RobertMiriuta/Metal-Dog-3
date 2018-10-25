@@ -20,6 +20,7 @@ step time game = return updatedGame
         movedPlayer = movePlayer currentPlayer allPressedKeys
         movedEnemies = moveEnemies time listOfEnemies
         movedProjectiles = moveProjectiles time listOfProjectiles
+        remainingObjects = didAnyoneGetHit listOfProjectiles listOfEnemies
         updatedGame = game {player = movedPlayer, enemies = movedEnemies, projectiles = movedProjectiles}
 
 -- | Handle user input

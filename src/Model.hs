@@ -57,6 +57,24 @@ moveEnemies time (x:xs)
         movedEnemy = move x enemyMoveVector
         canBeRemoved = isOutOfBounds movedEnemy windowSizeFloat
 
+didAnyoneGetHit :: [Projectile] -> [Enemy] -> ([Projectile], [Enemy])
+didAnyoneGetHit [] xs = ([], xs)
+didAnyoneGetHit xs [] = (xs, [])
+didAnyoneGetHit (projectile:nextProjectile:lOP) lOE
+  | areEnemiesKilled = didAnyoneGetHit (nextProjectile:lOP) enemiesStillAlive
+  | otherwise = insertIntoTuple projectile (didAnyoneGetHit (nextProjectile:lOP) enemiesStillAlive)
+    where enemiesStillAlive = didProjectileHitEnemies projectile lOE
+          areEnemiesKilled = (length enemiesStillAlive /= length lOE)
+
+insertIntoTuple :: Projectile -> ([Projectile], [Enemy]) -> ([Projectile], [Enemy])
+insertIntoTuple p (projectiles, enemies) = (p:projectiles, enemies)
+
+didProjectileHitEnemies :: Projectile -> [Enemy] -> [Enemy]
+didProjectileHitEnemies _ [] = []
+didProjectileHitEnemies p (x:xs)
+  |isHit = didProjectileHitEnemies p xs
+  |otherwise = x : didProjectileHitEnemies p xs
+    where isHit = isHitBy p x
 
 fireBullet :: Player -> [SpecialKey] -> [Projectile]
 fireBullet player [] = []

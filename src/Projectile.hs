@@ -24,3 +24,7 @@ module Projectile where
             newHitBR = Pt newBoxXBR newBoxYBR
             newHitbox = HBox newHitTL newHitBR
             moveVec = multVectorSpeed dir (getSpeed p)
+
+  instance Collidable Projectile where
+    getHitbox = hitbox
+    

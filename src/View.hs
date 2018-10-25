@@ -26,13 +26,16 @@ viewPure game = pics
         pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea])
         
 renderActiveArea :: Picture
-renderActiveArea = color red $ Line [leftTop, rightTop, rightBottom, leftBottom, leftTop]
+renderActiveArea = Pictures [boundary,axis]
   where halfSizeX = (fst windowSizeFloat) / 2 
         halfSizeY = (snd windowSizeFloat) / 2
         leftTop = ((-halfSizeX), halfSizeY)
         rightTop = (halfSizeX, halfSizeY)
         rightBottom = (halfSizeX, (-halfSizeY))
         leftBottom = ((-halfSizeX), (-halfSizeY))
+        boundary = color yellow $ Line [leftTop, rightTop, rightBottom, leftBottom, leftTop]
+        axis = color yellow $ Line [(0,0), (0,halfSizeY), (0,0), ((-halfSizeX), 0), (0,0), (0,(-halfSizeY)), (0,0), ((halfSizeX), 0)]
+
 renderPlayer :: Player -> Picture
 renderPlayer player = translate xTrans yTrans $ drawPlayer
   where xTrans = xP (getPos player)
