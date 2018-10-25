@@ -31,7 +31,7 @@ repositionPlayer player x
   |x == KeyUp     = movePlayerWithVector player (0.0, 1.0)
   |x == KeyDown   = movePlayerWithVector player (0.0, (-1.0))
   |x == KeyLeft   = movePlayerWithVector player ((-1.0), 0.0)
-  |x == KeyRight  = movePlayerWithVector player (1.0, 0.0) 
+  |x == KeyRight  = movePlayerWithVector player (1.0, 0.0)
   |otherwise = player
 
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
@@ -79,5 +79,6 @@ didProjectileHitEnemies p (x:xs)
 fireBullet :: Player -> [SpecialKey] -> [Projectile]
 fireBullet player [] = []
 fireBullet player (x:xs)
-  |x == KeySpace = [standardProjectile (getPos player)]
+  |x == KeySpace = [standardProjectile firingPoint]
   |otherwise = fireBullet player xs
+    where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)

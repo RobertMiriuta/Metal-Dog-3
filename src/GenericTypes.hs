@@ -44,3 +44,6 @@ module GenericTypes where
 
   multVectorSpeed :: Vector -> Speed -> Vector
   multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
+
+  pointAdd :: Point -> Point -> Point
+  pointAdd (Pt a b) (Pt c d) = Pt (a+c) (b+d)

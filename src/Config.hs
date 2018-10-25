@@ -17,6 +17,7 @@ windowSizeInt = (800, 400)
 
 
 --Enemy appearance and other values
+--top left corner of the picture has to match the top left corner of the hitbox
 
 enemyColor = green
 
@@ -55,7 +56,10 @@ projectilePicture :: Picture
 projectilePicture = color projectileColor $ rectangleSolid 4 4
 
 standardProjectile :: GenericTypes.Point -> Projectile
-standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize standardProjectileHitbox
+standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox
+  where actualHitbox = HBox newTopLeft newBottomRight
+        newTopLeft = pointAdd point (topLeft standardProjectileHitbox)
+        newBottomRight = pointAdd point (bottomRight standardProjectileHitbox)
 
 standardProjectileSize :: Int
 standardProjectileSize = 4
@@ -64,7 +68,7 @@ standardProjectileSpeed :: Speed
 standardProjectileSpeed = Spd 200.0 0.0
 
 standardProjectileHitbox :: Hitbox
-standardProjectileHitbox = HBox (Pt 0.0 0.0) (Pt 4.0 4.0)
+standardProjectileHitbox = HBox (Pt (-2.0) (-2.0)) (Pt 2.0 2.0)
 
 --initial values
 playerSpawnCoordinates :: GenericTypes.Point
