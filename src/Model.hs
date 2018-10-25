@@ -20,37 +20,42 @@ movePlayerWithVector player (x,y) = move player moveVector
 
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player
-movePlayer player (x:xs)
-  |x == KeyUp     = movePlayer (movePlayerWithVector player (0.0, 1.0)) xs
-  |x == KeyDown   = movePlayer (movePlayerWithVector player (0.0, (-1.0))) xs
-  |x == KeyLeft   = movePlayer (movePlayerWithVector player ((-1.0), 0.0)) xs
-  |x == KeyRight  = movePlayer (movePlayerWithVector player (1.0, 0.0)) xs
-  |otherwise = movePlayer player xs
+movePlayer player (key:listOfKeys)
+  |isIllegalMove  = movePlayer player listOfKeys
+  |otherwise      = movePlayer movedPlayer listOfKeys
+    where movedPlayer   = repositionPlayer player key
+          isIllegalMove = isOutOfBounds movedPlayer windowSizeFloat
+
+repositionPlayer :: Player -> SpecialKey -> Player
+repositionPlayer player x
+  |x == KeyUp     = movePlayerWithVector player (0.0, 1.0)
+  |x == KeyDown   = movePlayerWithVector player (0.0, (-1.0))
+  |x == KeyLeft   = movePlayerWithVector player ((-1.0), 0.0)
+  |x == KeyRight  = movePlayerWithVector player (1.0, 0.0) 
+  |otherwise = player
 
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
 moveProjectiles time (x:xs)
-  |newX > boundaryX   = moveProjectiles time xs
+  |canBeRemoved       = moveProjectiles time xs
   |otherwise          = movedProjectile : moveProjectiles time xs
   where projectilePosition = getPos x
         projectilePositionY = yP projectilePosition
         projectileMoveVector = Vctr time projectilePositionY
         movedProjectile = move x projectileMoveVector
-        boundaryX = (fst windowSizeFloat) / 2
-        newX = xP (getPos movedProjectile)
+        canBeRemoved = isOutOfBounds movedProjectile windowSizeFloat
 
 moveEnemies :: Float -> [Enemy] -> [Enemy]
 moveEnemies _ [] = []
 moveEnemies time (x:xs)
-  |newX < boundaryX   = moveEnemies time xs
+  |canBeRemoved       = moveEnemies time xs
   |otherwise          = movedEnemy: moveEnemies time xs
   where enemyPosition = getPos x
         enemyPositionX = xP enemyPosition
         enemyPositionY = yP enemyPosition
-        boundaryX = (fst windowSizeFloat) / (-2)
         enemyMoveVector = Vctr time enemyPositionY
         movedEnemy = move x enemyMoveVector
-        newX = xP (getPos movedEnemy)
+        canBeRemoved = isOutOfBounds movedEnemy windowSizeFloat
 
 
 fireBullet :: Player -> [SpecialKey] -> [Projectile]
