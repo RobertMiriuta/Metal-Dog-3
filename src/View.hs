@@ -24,19 +24,29 @@ viewPure game = pics
         renderedenemies = renderEnemies listOfEnemies
         activeArea = renderActiveArea
         pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea])
-        
+
 renderActiveArea :: Picture
-renderActiveArea = color red $ Line [leftTop, rightTop, rightBottom, leftBottom, leftTop]
-  where halfSizeX = (fst windowSizeFloat) / 2 
+renderActiveArea = Pictures [boundary,axis]
+  where halfSizeX = (fst windowSizeFloat) / 2
         halfSizeY = (snd windowSizeFloat) / 2
         leftTop = ((-halfSizeX), halfSizeY)
         rightTop = (halfSizeX, halfSizeY)
         rightBottom = (halfSizeX, (-halfSizeY))
         leftBottom = ((-halfSizeX), (-halfSizeY))
+        boundary = color yellow $ Line [leftTop, rightTop, rightBottom, leftBottom, leftTop]
+        axis = color yellow $ Line [(0,0), (0,halfSizeY), (0,0), ((-halfSizeX), 0), (0,0), (0,(-halfSizeY)), (0,0), ((halfSizeX), 0)]
+
 renderPlayer :: Player -> Picture
-renderPlayer player = translate xTrans yTrans $ drawPlayer
+renderPlayer player = Pictures[translate xTrans yTrans $ drawPlayer, drawHitBox player]
   where xTrans = xP (getPos player)
         yTrans = yP (getPos player)
+
+drawHitBox :: Moveable a => Collidable a => a -> Picture
+drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP ptBottomRight, yP ptBottomRight), ptBottomLeft, (xP ptTopLeft, yP ptTopLeft)]
+  where ptTopLeft = topLeft (getHitbox a)
+        ptTopRight = (xP ptBottomRight, yP ptTopLeft)
+        ptBottomRight = bottomRight (getHitbox a)
+        ptBottomLeft = (yP ptBottomRight, xP ptTopLeft)
 
 renderProjectiles :: [Projectile] -> [Picture]
 renderProjectiles [] = []
@@ -47,12 +57,12 @@ renderProjectiles (x:xs) = (translate projectilepositionX projectilepositionY $ 
 
 renderEnemies :: [Enemy] -> [Picture]
 renderEnemies [] = []
-renderEnemies (x:xs) = (translate enemyPositionX enemyPositionY $ (drawEnemy (enemyKind x))) : renderEnemies xs
+renderEnemies (x:xs) = Pictures[(translate enemyPositionX enemyPositionY $ (drawEnemy (enemyKind x))) , drawHitBox x] : renderEnemies xs
   where enemyPosition = getPos x
         enemyPositionX = xP enemyPosition
         enemyPositionY = yP enemyPosition
 
-drawEnemy :: EnemyKind -> Picture 
+drawEnemy :: EnemyKind -> Picture
 drawEnemy Firework = enemyFireWorkPicture
 drawEnemy Cat = enemyCatPicture
 drawEnemy Postman = enemyPostmanPicture

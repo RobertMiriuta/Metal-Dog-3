@@ -17,7 +17,7 @@ module Player where
                         where newHealth = (getHealth p) - dmg
 
   instance Moveable Player where
-    getPos = position
+    getPos = topLeft . hitbox
     getSpeed = movementSpeed
     getSize = bottomRight . hitbox
     move p dir = p {position = newPos, hitbox = newHitbox}
@@ -32,3 +32,14 @@ module Player where
             newHitBR = Pt newBoxXBR newBoxYBR
             newHitbox = HBox newHitTL newHitBR
             moveVec = multVectorSpeed dir (getSpeed p)
+    isOutOfBounds a windowSize | xSz > widthHalf = True    --out to the right
+                               | ySz < -heightHalf = True   --out to the bottom
+                               | xCo < -widthHalf = True   --out to the left
+                               | yCo > heightHalf = True  --out to the top
+                               | otherwise = False
+                                 where xCo = xP (getPos a)
+                                       yCo = yP (getPos a)
+                                       xSz = xP (getSize a)
+                                       ySz = yP (getSize a)
+                                       widthHalf = (fst windowSize)/2
+                                       heightHalf = (snd windowSize)/2
