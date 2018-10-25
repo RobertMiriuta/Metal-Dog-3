@@ -22,8 +22,17 @@ viewPure game = pics
         renderedplayerShip = renderPlayer currentPlayer
         renderedprojectiles = renderProjectiles listOfProjectiles
         renderedenemies = renderEnemies listOfEnemies
-        pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies)
+        activeArea = renderActiveArea
+        pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea])
         
+renderActiveArea :: Picture
+renderActiveArea = color red $ Line [leftTop, rightTop, rightBottom, leftBottom, leftTop]
+  where halfSizeX = (fst windowSizeFloat) / 2 
+        halfSizeY = (snd windowSizeFloat) / 2
+        leftTop = ((-halfSizeX), halfSizeY)
+        rightTop = (halfSizeX, halfSizeY)
+        rightBottom = (halfSizeX, (-halfSizeY))
+        leftBottom = ((-halfSizeX), (-halfSizeY))
 renderPlayer :: Player -> Picture
 renderPlayer player = translate xTrans yTrans $ drawPlayer
   where xTrans = xP (getPos player)
