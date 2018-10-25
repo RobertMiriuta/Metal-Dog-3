@@ -10,7 +10,7 @@ module Projectile where
 
   instance Moveable Projectile where
     getHitbox = hitbox
-    getPos = position
+    getPos = topLeft . hitbox
     getSpeed = speed
     getSize = bottomRight . hitbox
     move p dir = p {position = newPos, hitbox = newHitbox}
