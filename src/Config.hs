@@ -80,7 +80,10 @@ standardPlayerSpeed :: Speed
 standardPlayerSpeed = Spd 2.0 2.0
 
 standardPlayerHitbox :: Hitbox
-standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
+standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 30.0 (-10.0)))
+  where spawnX = (-(fst windowSizeFloat) / 2) + 50
+        spawnY = 0.0
+        spawn  = Pt spawnX spawnY
 
 standardPlayerHealth :: Int
 standardPlayerHealth = 1
