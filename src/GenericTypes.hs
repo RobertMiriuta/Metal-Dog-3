@@ -41,9 +41,9 @@ module GenericTypes where
     move :: a -> Vector -> a   --moves model and hitbox
     isOutOfBounds :: a -> (Float, Float) -> Bool
     isOutOfBounds a windowSize | xCo > widthHalf = True    --out to the right
-                               | yCo < heightHalf = True   --out to the bottom
+                               | yCo < -heightHalf = True   --out to the bottom
                                | xSz < -widthHalf = True   --out to the left
-                               | ySz < -heightHalf = True  --out to the top
+                               | ySz > heightHalf = True  --out to the top
                                | otherwise = False
                                  where xCo = xP (getPos a)
                                        yCo = yP (getPos a)
