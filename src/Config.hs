@@ -78,15 +78,63 @@ enemyPostmanHealth = 1
 enemyPostmanHitbox :: Hitbox
 enemyPostmanHitbox = HBox (Pt 0.0 0.0) (Pt 20.0 (-35.0))
 
+enemyPostmanSpeed :: Speed
+enemyPostmanSpeed = Spd (-35.0) 25.0
+
+enemyPostmanReward :: Score
+enemyPostmanReward = Score 40
+
+enemyPostman :: Point -> Enemy
+enemyPostman pt = Enemy Postman enemyPostmanHealth pt newHitbox enemyPostmanSpeed enemyPostmanReward
+    where newHitbox = HBox newTL newBR
+          newTL     = pointAdd pt (topLeft enemyPostmanHitbox)
+          newBR     = pointAdd pt (bottomRight enemyPostmanHitbox)
+
+--Car
 enemyCarPicture :: Picture
 enemyCarPicture = color enemyColor $ Pictures [Polygon[(0,-5),(0,-10),(25,-10),(25,-5),(20,-5),(15,0),(10,0),(5,-5)],
                                                (translate 8 (-10) $ Circle 3),
                                                (translate 17 (-10) $ Circle 3)]
 
+enemyCarHealth :: Int
+enemyCarHealth = 1
+
+enemyCarHitbox :: Hitbox
+enemyCarHitbox = HBox (Pt 0.0 0.0) (Pt 25 (-13))
+
+enemyCarSpeed :: Speed
+enemyCarSpeed = Spd (-35.0) (-25.0)
+
+enemyCarReward :: Score
+enemyCarReward = Score 40
+
+enemyCar :: Point -> Enemy
+enemyCar pt = Enemy Car enemyCarHealth pt newHitbox enemyCarSpeed enemyCarReward
+  where newHitbox = HBox newTL newBR
+        newTL     = pointAdd pt (topLeft enemyCarHitbox)
+        newBR     = pointAdd pt (bottomRight enemyCarHitbox)
+
+--Vacuum Cleaner
 enemyVacuumCleanerPicture :: Picture
-enemyVacuumCleanerPicture = Polygon[(0,-20),(0,-25),(10,-25),(10,-20),(20,-15),(20,-5),(25,-5),(25,0),(20,0),(15,-5),(5,-20),(0,-20)]
+enemyVacuumCleanerPicture = color enemyColor $ Polygon[(0,-20),(0,-25),(10,-25),(10,-20),(20,-15),(20,-5),(25,-5),(25,0),(20,0),(15,-5),(5,-20),(0,-20)]
 
+enemyVacuumCleanerHealth :: Int
+enemyVacuumCleanerHealth = 5
 
+enemyVacuumCleanerHitbox :: Hitbox
+enemyVacuumCleanerHitbox = HBox (Pt 0.0 0.0) (Pt 25 (-25))
+
+enemyVacuumCleanerSpeed :: Speed
+enemyVacuumCleanerSpeed = Spd (-20.0) 0.0
+
+enemyVacuumCleanerReward :: Score
+enemyVacuumCleanerReward = Score 100
+
+enemyVacuumCleaner :: Point -> Enemy
+enemyVacuumCleaner pt = Enemy VacuumCleaner enemyVacuumCleanerHealth pt newHitbox enemyVacuumCleanerSpeed enemyVacuumCleanerReward
+    where newHitbox = HBox newTL newBR
+          newTL     = pointAdd pt (topLeft enemyVacuumCleanerHitbox)
+          newBR     = pointAdd pt (bottomRight enemyVacuumCleanerHitbox)
 --Player appearance and other values and ini
 
 playerColor = light (light blue)
@@ -137,7 +185,7 @@ standardPlayerHealth = 1
 -- initial values
 startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth
 startingProjectiles = []
-startingEnemies = [enemyCat (Pt 200.0 0.0), enemyFirework (Pt 200.0 50.0), enemyCat (Pt 200.0 (-50.0))]
+startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0)]
 startingKeys = []
 
 initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys
