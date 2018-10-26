@@ -53,7 +53,7 @@ playerPicture = color playerColor $ Pictures[Polygon[(0,-10),(10,-20),(20,-20),(
 projectileColor = red
 
 projectilePicture :: Picture
-projectilePicture = color projectileColor $ rectangleSolid 4 4
+projectilePicture = color projectileColor $ translate 2 2 $ rectangleSolid 4 4
 
 standardProjectile :: GenericTypes.Point -> Projectile
 standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox
@@ -68,7 +68,7 @@ standardProjectileSpeed :: Speed
 standardProjectileSpeed = Spd 200.0 0.0
 
 standardProjectileHitbox :: Hitbox
-standardProjectileHitbox = HBox (Pt 0 0) (Pt 4.0 4.0)
+standardProjectileHitbox = HBox (Pt (-2) (-2)) (Pt 2.0 2.0)
 
 --initial values
 playerSpawnCoordinates :: GenericTypes.Point
