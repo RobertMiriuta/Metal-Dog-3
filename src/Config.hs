@@ -1,8 +1,8 @@
 module Config where
 
-import Graphics.Gloss
+import Graphics.Gloss hiding (Point)
 import GameTypes
-import GenericTypes
+import GenericTypes hiding (standardPlayerHitbox)
 import Projectile
 import Enemy
 import Player
@@ -15,29 +15,76 @@ windowSizeFloat = (800.0, 400.0)
 windowSizeInt :: (Int, Int)
 windowSizeInt = (800, 400)
 
-
+--Enemies:
 --Enemy appearance and other values
+--top left corner of the picture has to match the top left corner of the hitbox
 
 enemyColor = green
 
-enemyFireWorkPicture :: Picture
-enemyFireWorkPicture = color enemyColor $ Polygon [(0,0),(10,10),(10,5),(25,5),(25,-5),(10,-5),(10,-10)]
+--Firework
+enemyFireworkPicture :: Picture
+enemyFireworkPicture = color enemyColor $ Polygon [(0,-10),(10,0),(10,-5),(25,-5),(25,-15),(10,-15),(10,-20)]
 
+enemyFireworkHitbox :: Hitbox
+enemyFireworkHitbox = HBox (Pt 0.0 0.0) (Pt 25 (-20))
+
+enemyFireworkHealth :: Int
+enemyFireworkHealth = 1
+
+enemyFireworkSpeed :: Speed
+enemyFireworkSpeed = (Spd (-100.0) 0.0)
+
+enemyFireworkReward :: Score
+enemyFireworkReward = Score 50
+
+enemyFirework :: Point -> Enemy
+enemyFirework pt = Enemy Firework enemyFireworkHealth pt newHitbox enemyFireworkSpeed enemyFireworkReward
+    where newHitbox = HBox newTL newBR
+          newTL     = pointAdd pt (topLeft enemyFireworkHitbox)
+          newBR     = pointAdd pt (bottomRight enemyFireworkHitbox)
+
+--Cat
 enemyCatPicture :: Picture
 enemyCatPicture = color enemyColor $ Pictures [Polygon [(0,0),(0,-5),(5,-5)],
                                                Polygon[(10,-5),(15,0),(15,-5)],
                                                Polygon[(0,-5),(15,-5),(15,-15),(10,-20),(5,-20),(0,-15)]]
+
+enemyCatHitbox :: Hitbox
+enemyCatHitbox = HBox (Pt 0.0 0.0) (Pt 15.0 (-20.0))
+
+enemyCatHealth :: Int
+enemyCatHealth = 1
+
+enemyCatSpeed :: Speed
+enemyCatSpeed = Spd (-50.0) 0.0
+
+enemyCatReward :: Score
+enemyCatReward = Score 20
+
+enemyCat :: Point -> Enemy
+enemyCat pt = Enemy Cat enemyCatHealth pt newHitbox enemyCatSpeed enemyCatReward
+    where newHitbox = HBox newTL newBR
+          newTL     = pointAdd pt (topLeft enemyCatHitbox)
+          newBR     = pointAdd pt (bottomRight enemyCatHitbox)
+
+--Postman
 enemyPostmanPicture :: Picture
-enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 5 $ Circle 5),
-                                                   Polygon[(0,0),(0,-15),(3,-15),(3,-5),(5,-5),(5,-25),(8,-25),(8,-15),(12,-15),(12,-25),(15,-25),(15,-5),(17,-5),(17,-15),(20,-15),(20,0)]]
+enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 (-5) $ Circle 5),
+                                                   Polygon[(0,-10),(0,-25),(3,-25),(3,-15),(5,-15),(5,-35),(8,-35),(8,-25),(12,-25),(12,-35),(15,-35),(15,-15),(17,-15),(17,-25),(20,-25),(20,-10)]]
+
+enemyPostmanHealth :: Int
+enemyPostmanHealth = 1
+
+enemyPostmanHitbox :: Hitbox
+enemyPostmanHitbox = HBox (Pt 0.0 0.0) (Pt 20.0 (-35.0))
 
 enemyCarPicture :: Picture
-enemyCarPicture = color enemyColor $ Pictures [Polygon[(0,0),(0,(-5)),(25,(-5)),(25,0),(20,0),(15,5),(10,5),(5,0)],
-                                               (translate 8 (-5) $ Circle 3),
-                                               (translate 17 (-5) $ Circle 3)]
+enemyCarPicture = color enemyColor $ Pictures [Polygon[(0,-5),(0,-10),(25,-10),(25,-5),(20,-5),(15,0),(10,0),(5,-5)],
+                                               (translate 8 (-10) $ Circle 3),
+                                               (translate 17 (-10) $ Circle 3)]
 
 enemyVacuumCleanerPicture :: Picture
-enemyVacuumCleanerPicture = Polygon[(0,0),(0,-5),(10,-5),(10,0),(20,5),(20,15),(25,15),(25,20),(20,20),(15,15),(5,0),(0,0)]
+enemyVacuumCleanerPicture = Polygon[(0,-20),(0,-25),(10,-25),(10,-20),(20,-15),(20,-5),(25,-5),(25,0),(20,0),(15,-5),(5,-20),(0,-20)]
 
 
 --Player appearance and other values and ini
@@ -45,17 +92,20 @@ enemyVacuumCleanerPicture = Polygon[(0,0),(0,-5),(10,-5),(10,0),(20,5),(20,15),(
 playerColor = light (light blue)
 
 playerPicture :: Picture
-playerPicture = color playerColor $ Pictures[Polygon[(0,0),(10,-10),(20,-10),(30,0)], translate 15 0 $ scale 1 2 $ Circle 5]
+playerPicture = color playerColor $ Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 15 (-10) $ scale 1 2 $ Circle 5]
 
 --Projectile appearance and other values
 
 projectileColor = red
 
 projectilePicture :: Picture
-projectilePicture = color projectileColor $ rectangleSolid 4 4
+projectilePicture = color projectileColor $ translate 2 (-2) $ rectangleSolid 4 4
 
-standardProjectile :: GenericTypes.Point -> Projectile
-standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize standardProjectileHitbox
+standardProjectile :: Point -> Projectile
+standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox
+  where actualHitbox = HBox newTopLeft newBottomRight
+        newTopLeft = pointAdd point (topLeft standardProjectileHitbox)
+        newBottomRight = pointAdd point (bottomRight standardProjectileHitbox)
 
 standardProjectileSize :: Int
 standardProjectileSize = 4
@@ -64,10 +114,10 @@ standardProjectileSpeed :: Speed
 standardProjectileSpeed = Spd 200.0 0.0
 
 standardProjectileHitbox :: Hitbox
-standardProjectileHitbox = HBox (Pt 0.0 0.0) (Pt 4.0 4.0)
+standardProjectileHitbox = HBox (Pt 0 0) (Pt 4.0 (-4.0))
 
 --initial values
-playerSpawnCoordinates :: GenericTypes.Point
+playerSpawnCoordinates :: Point
 playerSpawnCoordinates = (Pt spawnX spawnY)
   where spawnX = (-(fst windowSizeFloat) / 2) + 50 --50 pixels off of the left border
         spawnY = 0.0 --middle of the screen
@@ -76,7 +126,10 @@ standardPlayerSpeed :: Speed
 standardPlayerSpeed = Spd 2.0 2.0
 
 standardPlayerHitbox :: Hitbox
-standardPlayerHitbox = HBox (Pt 0.0 0.0) (Pt 20.0 20.0)
+standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 30.0 (-10.0)))
+  where spawnX = (-(fst windowSizeFloat) / 2) + 50
+        spawnY = 0.0
+        spawn  = Pt spawnX spawnY
 
 standardPlayerHealth :: Int
 standardPlayerHealth = 1
@@ -84,8 +137,7 @@ standardPlayerHealth = 1
 -- initial values
 startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth
 startingProjectiles = []
-startingEnemies = [Enemy Cat 1 (Pt 200.0 0.0) (HBox (Pt 0.0 0.0) (Pt 15.0 (-20.0))) (Spd (-50.0) 0.0) (Score 20)]
+startingEnemies = [enemyCat (Pt 200.0 0.0), enemyFirework (Pt 200.0 50.0), enemyCat (Pt 200.0 (-50.0))]
 startingKeys = []
 
 initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys
-
