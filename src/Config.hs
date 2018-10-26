@@ -114,7 +114,7 @@ standardProjectileSpeed :: Speed
 standardProjectileSpeed = Spd 200.0 0.0
 
 standardProjectileHitbox :: Hitbox
-standardProjectileHitbox = HBox (Pt 0 0) (Pt 4.0 4.0)
+standardProjectileHitbox = HBox (Pt 0 0) (Pt 4.0 (-4.0))
 
 --initial values
 playerSpawnCoordinates :: Point

@@ -1,15 +1,20 @@
 module GenericTypes where
 
   data Point = Pt {xP::Float, yP::Float}
+      deriving Show
 
   data Vector = Vctr {uV::Float, vV::Float}
+      deriving Show
 
   data Speed = Spd {speedPerTickX::Float, speedPerTickY::Float}
+      deriving Show
 
   --All hitboxes are rectangles
   data Hitbox = HBox {topLeft::Point, bottomRight::Point}
+      deriving Show
 
   data Score = Score Int
+      deriving Show
 
   standardPlayerHitbox :: Hitbox
   standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
@@ -28,19 +33,20 @@ module GenericTypes where
     isOutOfBounds :: a -> (Float, Float) -> Bool
     getHitbox :: a -> Hitbox
     isHitBy :: Moveable b => a -> b -> Bool
-    isHitBy a b | l1x > r2x = False
-                | l2x > r1x = False
-                | l1y < r2y = False
-                | l2y < r1y = False
+    isHitBy first second 
+                | topXfirst > bottomXsecond = False
+                | topYfirst < bottomYsecond = False
+                | bottomXfirst < topXsecond = False
+                | bottomYfirst > topYsecond = False
                 | otherwise = True
-                  where l1x = xP (topLeft (getHitbox a))
-                        l2x = xP (topLeft (getHitbox b))
-                        l1y = yP (topLeft (getHitbox a))
-                        l2y = yP (topLeft (getHitbox b))
-                        r1x = xP (bottomRight (getHitbox a))
-                        r2x = xP (bottomRight (getHitbox b))
-                        r1y = yP (bottomRight (getHitbox a))
-                        r2y = yP (bottomRight (getHitbox b))
+                  where topXfirst = xP (topLeft (getHitbox first))
+                        topXsecond = xP (topLeft (getHitbox second))
+                        topYfirst = yP (topLeft (getHitbox first))
+                        topYsecond = yP (topLeft (getHitbox second))
+                        bottomXfirst = xP (bottomRight (getHitbox first))
+                        bottomXsecond = xP (bottomRight (getHitbox second))
+                        bottomYfirst = yP (bottomRight (getHitbox first))
+                        bottomYsecond = yP (bottomRight (getHitbox second))
 
   multVectorSpeed :: Vector -> Speed -> Vector
   multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
