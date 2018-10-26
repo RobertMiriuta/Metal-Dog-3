@@ -8,6 +8,7 @@ import GenericTypes
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
+import Data.List
 
 -- | Handle one iteration of the game
 step :: Float -> MetalDogGame -> IO MetalDogGame
@@ -23,7 +24,9 @@ step time game = return updatedGame
         remainingObjects = didAnyoneGetHit movedProjectiles movedEnemies
         remaningProjectiles = (fst remainingObjects) ++ newProjectiles 
         remainingEnemies = snd remainingObjects
-        updatedGame = game {player = movedPlayer, enemies = remainingEnemies, projectiles = remaningProjectiles}
+        deadEnemies = movedEnemies \\ remainingEnemies
+        updatedScore = (currentScore game) `additionScore` (getReward deadEnemies)
+        updatedGame = game {player = movedPlayer, enemies = remainingEnemies, projectiles = remaningProjectiles, currentScore = updatedScore}
 
 -- | Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame

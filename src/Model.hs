@@ -90,3 +90,8 @@ fireBullet player (x:xs)
     where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
 
 createRandomEnemy :: Enemy
+createRandomEnemy = undefined
+
+getReward :: [Enemy] -> Score
+getReward [] = Score 0
+getReward (x:xs) = (reward x) `additionScore` (getReward xs)
