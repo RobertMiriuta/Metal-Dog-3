@@ -185,7 +185,7 @@ standardPlayerHealth = 1
 -- initial values
 startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth
 startingProjectiles = []
-startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0)]
+startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
 startingKeys = []
 
 initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys

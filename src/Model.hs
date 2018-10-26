@@ -8,6 +8,7 @@ import Enemy
 import Projectile
 import GameTypes
 import Config
+import System.Random
 import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, KeyRight, KeySpace))
 
 
@@ -87,3 +88,5 @@ fireBullet player (x:xs)
   |x == KeySpace = [standardProjectile firingPoint]
   |otherwise = fireBullet player xs
     where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
+
+createRandomEnemy :: Enemy
