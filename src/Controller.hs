@@ -14,14 +14,16 @@ step :: Float -> MetalDogGame -> IO MetalDogGame
 step time game = return updatedGame
   where listOfEnemies = enemies game
         newProjectiles = fireBullet currentPlayer allPressedKeys
-        listOfProjectiles = newProjectiles ++ (projectiles game)
+        listOfProjectiles = projectiles game
         currentPlayer = player game
         allPressedKeys = keysPressed game
         movedPlayer = movePlayer currentPlayer allPressedKeys
         movedEnemies = moveEnemies time listOfEnemies
         movedProjectiles = moveProjectiles time listOfProjectiles
-        remainingObjects = didAnyoneGetHit listOfProjectiles listOfEnemies
-        updatedGame = game {player = movedPlayer, enemies = movedEnemies, projectiles = movedProjectiles}
+        remainingObjects = didAnyoneGetHit movedProjectiles movedEnemies
+        remaningProjectiles = (fst remainingObjects) ++ newProjectiles 
+        remainingEnemies = snd remainingObjects
+        updatedGame = game {player = movedPlayer, enemies = remainingEnemies, projectiles = remaningProjectiles}
 
 -- | Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame

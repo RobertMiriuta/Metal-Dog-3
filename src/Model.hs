@@ -59,6 +59,11 @@ moveEnemies time (x:xs)
 
 didAnyoneGetHit :: [Projectile] -> [Enemy] -> ([Projectile], [Enemy])
 didAnyoneGetHit [] xs = ([], xs)
+didAnyoneGetHit [lastprojectile] lOE
+  | areEnemiesKilled = ([], enemiesStillAlive)
+  | otherwise = ([lastprojectile], enemiesStillAlive)
+    where enemiesStillAlive = didProjectileHitEnemies lastprojectile lOE
+          areEnemiesKilled = (length enemiesStillAlive /= length lOE)
 didAnyoneGetHit xs [] = (xs, [])
 didAnyoneGetHit (projectile:nextProjectile:lOP) lOE
   | areEnemiesKilled = didAnyoneGetHit (nextProjectile:lOP) enemiesStillAlive
