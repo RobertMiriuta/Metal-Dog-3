@@ -17,6 +17,8 @@ view = return . viewPure
 viewPure :: MetalDogGame -> Picture
 viewPure game = pics
   where currentPlayer = player game
+        halfSizeX = (fst windowSizeFloat) / 2
+        halfSizeY = (snd windowSizeFloat) / 2
         listOfProjectiles = projectiles game
         listOfEnemies = enemies game
         renderedplayerShip = renderPlayer currentPlayer
@@ -25,7 +27,7 @@ viewPure game = pics
         renderedenemies = renderEnemies listOfEnemies
         activeArea = renderActiveArea
         scorePic = scale 0.15 0.15.color orange.text $ show scr
-        score = translate (0.0) (-50.0) scorePic
+        score = translate (-halfSizeX) (halfSizeY-20) scorePic
         pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score])
 
 renderActiveArea :: Picture
