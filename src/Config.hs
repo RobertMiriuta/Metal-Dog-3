@@ -99,7 +99,7 @@ playerPicture = color playerColor $ Pictures[Polygon[(0,-10),(10,-20),(20,-20),(
 projectileColor = red
 
 projectilePicture :: Picture
-projectilePicture = color projectileColor $ translate 2 2 $ rectangleSolid 4 4
+projectilePicture = color projectileColor $ translate 2 (-2) $ rectangleSolid 4 4
 
 standardProjectile :: Point -> Projectile
 standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox
