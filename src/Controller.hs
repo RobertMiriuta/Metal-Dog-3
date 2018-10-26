@@ -23,6 +23,7 @@ step time game = return updatedGame
         remainingObjects = didAnyoneGetHit movedProjectiles movedEnemies
         remaningProjectiles = (fst remainingObjects) ++ newProjectiles 
         remainingEnemies = snd remainingObjects
+        deadEnemies = remainingEnemies \\ movedEnemies
         updatedGame = game {player = movedPlayer, enemies = remainingEnemies, projectiles = remaningProjectiles}
 
 -- | Handle user input

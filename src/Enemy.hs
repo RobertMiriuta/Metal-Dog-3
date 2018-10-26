@@ -8,12 +8,13 @@ module Enemy where
                        hitbox::Hitbox,
                        speed::Speed,
                        reward::Score}
-
+                      deriving(Eq)
   data EnemyKind = Cat
                 |Postman
                 |Firework
                 |Car
                 |VacuumCleaner
+                deriving(Eq)
 
   instance Damageable Enemy where
     getHealth = health

@@ -1,7 +1,7 @@
 module GenericTypes where
 
   data Point = Pt {xP::Float, yP::Float}
-      deriving Show
+      deriving (Show,Eq)
 
   data Vector = Vctr {uV::Float, vV::Float}
       deriving Show
@@ -11,10 +11,10 @@ module GenericTypes where
 
   --All hitboxes are rectangles
   data Hitbox = HBox {topLeft::Point, bottomRight::Point}
-      deriving Show
+      deriving (Show, Eq)
 
   data Score = Score Int
-      deriving Show
+      deriving (Show, Eq)
 
   standardPlayerHitbox :: Hitbox
   standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
