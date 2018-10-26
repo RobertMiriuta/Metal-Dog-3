@@ -139,5 +139,6 @@ startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerH
 startingProjectiles = []
 startingEnemies = [enemyCat (Pt 200.0 0.0), enemyFirework (Pt 200.0 50.0), enemyCat (Pt 200.0 (-50.0))]
 startingKeys = []
+startingScore = Score 0
 
-initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys
+initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys startingScore

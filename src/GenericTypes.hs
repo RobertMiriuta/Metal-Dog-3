@@ -7,7 +7,7 @@ module GenericTypes where
       deriving Show
 
   data Speed = Spd {speedPerTickX::Float, speedPerTickY::Float}
-      deriving Show
+      deriving (Show,Eq)
 
   --All hitboxes are rectangles
   data Hitbox = HBox {topLeft::Point, bottomRight::Point}
@@ -15,6 +15,9 @@ module GenericTypes where
 
   data Score = Score Int
       deriving (Show, Eq)
+
+  additionScore :: Score -> Score -> Score 
+  additionScore (Score a) (Score b) = Score (a+b)
 
   standardPlayerHitbox :: Hitbox
   standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))

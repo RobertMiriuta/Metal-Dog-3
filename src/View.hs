@@ -21,9 +21,12 @@ viewPure game = pics
         listOfEnemies = enemies game
         renderedplayerShip = renderPlayer currentPlayer
         renderedprojectiles = renderProjectiles listOfProjectiles
+        scr = currentScore game
         renderedenemies = renderEnemies listOfEnemies
         activeArea = renderActiveArea
-        pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea])
+        scorePic = scale 0.15 0.15.color orange.text $ show scr
+        score = translate (0.0) (-50.0) scorePic
+        pics = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score])
 
 renderActiveArea :: Picture
 renderActiveArea = Pictures [boundary,axis]

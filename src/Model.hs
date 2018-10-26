@@ -87,3 +87,7 @@ fireBullet player (x:xs)
   |x == KeySpace = [standardProjectile firingPoint]
   |otherwise = fireBullet player xs
     where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
+
+getReward :: [Enemy] -> Score
+getReward [] = Score 0
+getReward (x:xs) = (reward x) `additionScore` (getReward xs)
