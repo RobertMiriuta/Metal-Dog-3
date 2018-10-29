@@ -63,7 +63,7 @@ didPlayerGetHit :: [Enemy] -> Player -> ([Enemy], Player)
 didPlayerGetHit [] player = ([], player)
 didPlayerGetHit (x:xs) player
   |isHit && (remainingPlayer == Nothing) = (xs, deadPlayer)
-  |isHit && (remainingPlayer == (Just damagedPlayer)) = didPlayerGetHit xs damagedPlayer
+  |isHit && (remainingPlayer == (Just damagedPlayer)) = didPlayerGetHit xs (damagedPlayer {status = "hit"})
   |otherwise = insertEnemyIntoTuple x (didPlayerGetHit xs player)
     where isHit = isHitBy player x
           currentHealth = getHealth player
