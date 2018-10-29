@@ -8,6 +8,7 @@ module Player where
                       health::Int,
                       status::String
                       } --activeWeapon::Weapon
+                        deriving Eq
 
   instance Damageable Player where
     getHealth = health

@@ -62,10 +62,15 @@ moveEnemies time (x:xs)
 didPlayerGetHit :: [Enemy] -> Player -> ([Enemy], Player)
 didPlayerGetHit [] player = ([], player)
 didPlayerGetHit (x:xs) player
-  |isHit = didPlayerGetHit xs damagedPlayer
+  |isHit && (remainingPlayer == Nothing) = (xs, deadPlayer)
+  |isHit && (remainingPlayer == (Just damagedPlayer)) = didPlayerGetHit xs damagedPlayer
   |otherwise = insertEnemyIntoTuple x (didPlayerGetHit xs player)
     where isHit = isHitBy player x
-          damagedPlayer = player {status = "hit"}
+          currentHealth = getHealth player
+          damagedHealth = currentHealth - 1 
+          damagedPlayer = player {Player.health = damagedHealth}
+          remainingPlayer = takeDamage player 1
+          deadPlayer = player {Player.health = 0, status = "dead"}
 
 didEnemyGetHit :: [Projectile] -> [Enemy] -> ([Projectile], [Enemy])
 didEnemyGetHit [] xs = ([], xs)
