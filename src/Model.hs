@@ -15,9 +15,6 @@ import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, 
 initialState :: MetalDogGame
 initialState = initialGame
 
-movePlayerWithVector :: Player -> (Float, Float) -> Player
-movePlayerWithVector player (x,y) = move player moveVector
-  where moveVector = Vctr x y
 
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player
@@ -34,6 +31,10 @@ repositionPlayer player x
   |x == KeyLeft   = movePlayerWithVector player ((-1.0), 0.0)
   |x == KeyRight  = movePlayerWithVector player (1.0, 0.0)
   |otherwise = player
+
+movePlayerWithVector :: Player -> (Float, Float) -> Player
+movePlayerWithVector player (x,y) = move player moveVector
+  where moveVector = Vctr x y
 
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
@@ -58,22 +59,33 @@ moveEnemies time (x:xs)
         movedEnemy = move x enemyMoveVector
         canBeRemoved = isOutOfBounds movedEnemy windowSizeFloat
 
-didAnyoneGetHit :: [Projectile] -> [Enemy] -> ([Projectile], [Enemy])
-didAnyoneGetHit [] xs = ([], xs)
-didAnyoneGetHit [lastprojectile] lOE
+didPlayerGetHit :: [Enemy] -> Player -> ([Enemy], Player)
+didPlayerGetHit [] player = ([], player)
+didPlayerGetHit (x:xs) player
+  |isHit = didPlayerGetHit xs damagedPlayer
+  |otherwise = insertEnemyIntoTuple x (didPlayerGetHit xs player)
+    where isHit = isHitBy player x
+          damagedPlayer = player {status = "hit"}
+
+didEnemyGetHit :: [Projectile] -> [Enemy] -> ([Projectile], [Enemy])
+didEnemyGetHit [] xs = ([], xs)
+didEnemyGetHit [lastprojectile] lOE
   | areEnemiesKilled = ([], enemiesStillAlive)
   | otherwise = ([lastprojectile], enemiesStillAlive)
     where enemiesStillAlive = didProjectileHitEnemies lastprojectile lOE
           areEnemiesKilled = (length enemiesStillAlive /= length lOE)
-didAnyoneGetHit xs [] = (xs, [])
-didAnyoneGetHit (projectile:nextProjectile:lOP) lOE
-  | areEnemiesKilled = didAnyoneGetHit (nextProjectile:lOP) enemiesStillAlive
-  | otherwise = insertIntoTuple projectile (didAnyoneGetHit (nextProjectile:lOP) enemiesStillAlive)
+didEnemyGetHit xs [] = (xs, [])
+didEnemyGetHit (projectile:nextProjectile:lOP) lOE
+  | areEnemiesKilled = didEnemyGetHit (nextProjectile:lOP) enemiesStillAlive
+  | otherwise = insertProjectileIntoTuple projectile (didEnemyGetHit (nextProjectile:lOP) enemiesStillAlive)
     where enemiesStillAlive = didProjectileHitEnemies projectile lOE
           areEnemiesKilled = (length enemiesStillAlive /= length lOE)
 
-insertIntoTuple :: Projectile -> ([Projectile], [Enemy]) -> ([Projectile], [Enemy])
-insertIntoTuple p (projectiles, enemies) = (p:projectiles, enemies)
+insertProjectileIntoTuple :: Projectile -> ([Projectile], [Enemy]) -> ([Projectile], [Enemy])
+insertProjectileIntoTuple p (projectiles, enemies) = (p:projectiles, enemies)
+
+insertEnemyIntoTuple :: Enemy -> ([Enemy], Player) -> ([Enemy], Player)
+insertEnemyIntoTuple e (enemies, player) = (e:enemies, player)
 
 didProjectileHitEnemies :: Projectile -> [Enemy] -> [Enemy]
 didProjectileHitEnemies _ [] = []

@@ -5,12 +5,17 @@ module Player where
   data Player = Plyr {position::Point,
                       movementSpeed::Speed,
                       hitbox::Hitbox,
-                      health::Int} --activeWeapon::Weapon
+                      health::Int,
+                      status::String
+                      } --activeWeapon::Weapon
 
   instance Damageable Player where
     getHealth = health
     takeDamage p dmg | newHealth <= 0 = Nothing
                      | otherwise = Just (p {health = newHealth})
+                        where newHealth = (getHealth p) - dmg
+    updateStatus p dmg | newHealth <= 0 = p {status = "dead"}
+                     | otherwise = p {status = "hit"}
                         where newHealth = (getHealth p) - dmg
 
   --every moveable object has a size and hitbox and can collide with other moveable objects

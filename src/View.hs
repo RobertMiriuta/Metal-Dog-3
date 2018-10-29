@@ -42,7 +42,7 @@ renderActiveArea = Pictures [boundary,axis]
         axis = color yellow $ Line [(0,0), (0,halfSizeY), (0,0), ((-halfSizeX), 0), (0,0), (0,(-halfSizeY)), (0,0), ((halfSizeX), 0)]
 
 renderPlayer :: Player -> Picture
-renderPlayer player = Pictures[translate xTrans yTrans $ drawPlayer, drawHitBox player]
+renderPlayer player = Pictures[translate xTrans yTrans $ (drawPlayer player), drawHitBox player]
   where xTrans = xP (getPos player)
         yTrans = yP (getPos player)
 
@@ -74,8 +74,13 @@ drawEnemy Postman = enemyPostmanPicture
 drawEnemy Car = enemyCarPicture
 drawEnemy VacuumCleaner = enemyVacuumCleanerPicture
 
-drawPlayer :: Picture
-drawPlayer = playerPicture
+drawPlayer :: Player -> Picture
+drawPlayer player = color selectedColor $ playerPicture
+  where statusColor "alive" = light (light blue)
+        statusColor "hit" = white
+        statusColor "dead" = black
+        statusColor x = red
+        selectedColor = statusColor (status player)
 
 drawProjectile :: Picture
 drawProjectile = projectilePicture

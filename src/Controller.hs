@@ -21,9 +21,10 @@ step time game = return updatedGame
         movedPlayer = movePlayer currentPlayer allPressedKeys
         movedEnemies = moveEnemies time listOfEnemies
         movedProjectiles = moveProjectiles time listOfProjectiles
-        remainingObjects = didAnyoneGetHit movedProjectiles movedEnemies
+        remainingObjects = didEnemyGetHit movedProjectiles movedEnemies
         remaningProjectiles = (fst remainingObjects) ++ newProjectiles 
         remainingEnemies = snd remainingObjects
+        remainingPlayer = didPlayerGetHit currentPlayer movedEnemies
         deadEnemies = movedEnemies \\ remainingEnemies
         updatedScore = (currentScore game) `additionScore` (getReward deadEnemies)
         updatedGame = game {player = movedPlayer, enemies = remainingEnemies, projectiles = remaningProjectiles, currentScore = updatedScore}
