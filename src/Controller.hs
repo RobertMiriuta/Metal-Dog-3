@@ -23,11 +23,13 @@ step time game = return updatedGame
         movedProjectiles = moveProjectiles time listOfProjectiles
         remainingObjects = didEnemyGetHit movedProjectiles movedEnemies
         remaningProjectiles = (fst remainingObjects) ++ newProjectiles 
-        remainingEnemies = snd remainingObjects
-        remainingPlayer = didPlayerGetHit currentPlayer movedEnemies
-        deadEnemies = movedEnemies \\ remainingEnemies
+        remainingEnemiesAfterKills = snd remainingObjects
+        damagedPlayerEnemies = didPlayerGetHit remainingEnemiesAfterKills movedPlayer
+        remainingEnemiesAfterCollision = fst damagedPlayerEnemies
+        remainingPlayer = snd damagedPlayerEnemies
+        deadEnemies = movedEnemies \\ remainingEnemiesAfterKills
         updatedScore = (currentScore game) `additionScore` (getReward deadEnemies)
-        updatedGame = game {player = movedPlayer, enemies = remainingEnemies, projectiles = remaningProjectiles, currentScore = updatedScore}
+        updatedGame = game {player = remainingPlayer, enemies = remainingEnemiesAfterCollision, projectiles = remaningProjectiles, currentScore = updatedScore}
 
 -- | Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame
