@@ -12,8 +12,8 @@ import System.Random
 import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, KeyRight, KeySpace))
 
 
-initialState :: MetalDogGame
-initialState = initialGame
+initialState :: StdGen -> MetalDogGame
+initialState gen = initialGame gen
 
 movePlayerWithVector :: Player -> (Float, Float) -> Player
 movePlayerWithVector player (x,y) = move player moveVector
@@ -90,3 +90,4 @@ fireBullet player (x:xs)
     where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
 
 createRandomEnemy :: Enemy
+createRandomEnemy = undefined

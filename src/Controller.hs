@@ -21,7 +21,7 @@ step time game = return updatedGame
         movedEnemies = moveEnemies time listOfEnemies
         movedProjectiles = moveProjectiles time listOfProjectiles
         remainingObjects = didAnyoneGetHit movedProjectiles movedEnemies
-        remaningProjectiles = (fst remainingObjects) ++ newProjectiles 
+        remaningProjectiles = (fst remainingObjects) ++ newProjectiles
         remainingEnemies = snd remainingObjects
         updatedGame = game {player = movedPlayer, enemies = remainingEnemies, projectiles = remaningProjectiles}
 
@@ -57,4 +57,3 @@ inputKey (EventKey (SpecialKey key) Up _ _) game = case key of
               removeRight = newKeys KeyRight
 
 inputKey _ game = game -- Otherwise keep the same
-

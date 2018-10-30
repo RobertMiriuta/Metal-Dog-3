@@ -6,6 +6,7 @@ import GenericTypes hiding (standardPlayerHitbox)
 import Projectile
 import Enemy
 import Player
+import System.Random
 
 --Window settings
 
@@ -188,4 +189,5 @@ startingProjectiles = []
 startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
 startingKeys = []
 
-initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys
+initialGame :: StdGen -> MetalDogGame
+initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed
