@@ -138,10 +138,8 @@ enemyVacuumCleaner pt = Enemy VacuumCleaner enemyVacuumCleanerHealth pt newHitbo
           newBR     = pointAdd pt (bottomRight enemyVacuumCleanerHitbox)
 --Player appearance and other values and ini
 
-playerColor = light (light blue)
-
 playerPicture :: Picture
-playerPicture = color playerColor $ Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 15 (-10) $ scale 1 2 $ Circle 5]
+playerPicture = Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 15 (-10) $ scale 1 2 $ Circle 5]
 
 --Projectile appearance and other values
 
@@ -181,13 +179,15 @@ standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 3
         spawn  = Pt spawnX spawnY
 
 standardPlayerHealth :: Int
-standardPlayerHealth = 1
+standardPlayerHealth = 2
 
 -- initial values
-startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth
+startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive"
 startingProjectiles = []
 startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
 startingKeys = []
+startingScore = Score 0
+startingState = Playing
 
 initialGame :: StdGen -> MetalDogGame
 initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed
