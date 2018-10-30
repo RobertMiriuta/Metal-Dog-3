@@ -29,7 +29,7 @@ amountEnemyTypes :: Int
 amountEnemyTypes = 5
 
 difficulty :: Int
-difficulty = 15
+difficulty = 30
 
 --Firework
 enemyFireworkPicture :: Picture

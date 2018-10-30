@@ -104,14 +104,14 @@ fireBullet player (x:xs)
   |otherwise = fireBullet player xs
     where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
 
-createRandomEnemyType :: StdGen -> (EnemyKind, StdGen)
-createRandomEnemyType seed
+createRandomEnemyKind :: StdGen -> (EnemyKind, StdGen)
+createRandomEnemyKind seed
     | num == 0 = (Firework, newGen)
     | num == 1 = (Cat, newGen)
     | num == 2 = (Postman, newGen)
     | num == 3 = (Car, newGen)
     | otherwise = (VacuumCleaner, newGen)
-      where ranGen1 = randomR (0, (amountEnemyTypes - 1)) seed
+      where ranGen1 = randomR (0, amountEnemyTypes) seed
             newGen = snd ranGen1
             numF = abs (fst ranGen1)
             num = numF - (numF `mod` 1)
@@ -119,12 +119,12 @@ createRandomEnemyType seed
 createRandomEnemy :: (EnemyKind, StdGen) -> (Enemy, StdGen)
 createRandomEnemy (kind, seed)
     | kind == Firework     = (enemyFirework ranPos, newSeed)
-    | kind == Cat          = (enemyCar ranPos, newSeed)
+    | kind == Cat          = (enemyCat ranPos, newSeed)
     | kind == Postman      = (enemyPostman ranPos, newSeed)
     | kind == Car          = (enemyCar ranPos, newSeed)
     | otherwise = (enemyVacuumCleaner ranPos, newSeed)
       where ranGen = randomR spawnBoundY seed
-            posX = (fst windowSizeFloat)/2
+            posX = ((fst windowSizeFloat)/2) - 50.0
             ranPosY = fst ranGen
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
@@ -133,7 +133,7 @@ generateEnemy :: StdGen -> [Enemy] -> ([Enemy], StdGen)
 generateEnemy seed xs
     | length xs < difficulty = returnTuple
     | otherwise = ([], seed)
-      where newEnem = createRandomEnemy (createRandomEnemyType seed)
+      where newEnem = createRandomEnemy (createRandomEnemyKind seed)
             returnTuple = ([fst newEnem], snd newEnem)
 
 getReward :: [Enemy] -> Score
