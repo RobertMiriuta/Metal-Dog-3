@@ -53,7 +53,7 @@ moveEnemies time (x:xs)
   where enemyPosition = getPos x
         enemyPositionX = xP enemyPosition
         enemyPositionY = yP enemyPosition
-        enemyMoveVector = Vctr time enemyPositionY
+        enemyMoveVector = Vctr time time
         movedEnemy = move x enemyMoveVector
         canBeRemoved = isOutOfBounds movedEnemy windowSizeFloat
 
@@ -124,7 +124,7 @@ createRandomEnemy (kind, seed)
     | kind == Car          = (enemyCar ranPos, newSeed)
     | otherwise = (enemyVacuumCleaner ranPos, newSeed)
       where ranGen = randomR spawnBoundY seed
-            posX = ((fst windowSizeFloat)/2) - 50.0
+            posX = (fst windowSizeFloat)/2
             ranPosY = fst ranGen
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
