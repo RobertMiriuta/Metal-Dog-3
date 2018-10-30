@@ -113,7 +113,8 @@ createRandomEnemyType seed
     | otherwise = (VacuumCleaner, newGen)
       where ranGen1 = randomR (0, (amountEnemyTypes - 1)) seed
             newGen = snd ranGen1
-            num = abs (fst ranGen1)
+            numF = abs (fst ranGen1)
+            num = numF - (numF `mod` 1)
 
 createRandomEnemy :: (EnemyKind, StdGen) -> (Enemy, StdGen)
 createRandomEnemy (kind, seed)

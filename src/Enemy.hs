@@ -16,14 +16,14 @@ data EnemyKind = Cat
               |Firework
               |Car
               |VacuumCleaner
-              deriving(Eq)
+              deriving(Eq, Show)
 
 instance Damageable Enemy where
   getHealth = health
   takeDamage enmy dmg | newHealth <= 0 = Nothing
                       | otherwise = Just (enmy {health = newHealth})
                       where newHealth = (getHealth enmy) - dmg
-                      
+
 instance Moveable Enemy where
   getHitbox = hitbox
   getPos = topLeft . hitbox
