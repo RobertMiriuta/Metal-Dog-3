@@ -68,5 +68,5 @@ inputKey (EventKey (Char 'p') Down _ _) game
   |isPlaying = game {gameState = Paused}
   |otherwise = game {gameState = Playing}
     where isPlaying = (gameState game) == Playing
-inputKey (EventKey (Char 'r') Down _ _) game = initialState --Resets the game
+inputKey (EventKey (Char 'r') Down _ _) game = initialState (seed game) --Resets the game
 inputKey _ game = game -- Otherwise keep the same

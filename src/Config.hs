@@ -190,4 +190,4 @@ startingScore = Score 0
 startingState = Playing
 
 initialGame :: StdGen -> MetalDogGame
-initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed
+initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState

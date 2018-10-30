@@ -104,8 +104,8 @@ fireBullet player (x:xs)
   |otherwise = fireBullet player xs
     where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
 
-createRandomEnemy :: Enemy
-createRandomEnemy = undefined
+createRandomEnemy :: StdGen -> Enemy
+createRandomEnemy seed = undefined
 
 getReward :: [Enemy] -> Score
 getReward [] = Score 0
