@@ -5,6 +5,7 @@ module Controller where
 import Model
 import GameTypes
 import GenericTypes
+import Particle
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
@@ -22,6 +23,9 @@ step time game
           isDead                          = playerStatus == "dead"
           listOfEnemies                   = enemies game
           listOfProjectiles               = projectiles game
+          listOfParticles                 = particles game
+          updatedParticles                = map (growParticle time) listOfParticles
+          remainingParticles              = cleanUpParticles updatedParticles
           currentPlayer                   = player game
           updatedPlayer                   = updatedPlayerWeapon currentPlayer time
           allPressedKeys                  = keysPressed game
@@ -31,6 +35,8 @@ step time game
           movedPlayer                     = movePlayer newPlayer allPressedKeys
           movedEnemies                    = moveEnemies time listOfEnemies
           movedProjectiles                = moveProjectiles time listOfProjectiles
+          allProjectiles                  = listOfProjectiles ++ newProjectiles
+          newListOfParticles              = createParticles allProjectiles ++ remainingParticles
           remainingObjects                = didEnemyGetHit movedProjectiles movedEnemies
           remaningProjectiles             = (fst remainingObjects) ++ newProjectiles
           remainingEnemiesAfterKills      = snd remainingObjects
@@ -45,7 +51,7 @@ step time game
           updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
           oldGameTime                     = gameTime game
           updatedGameTime                 = oldGameTime + time
-          updatedGame                     = game {player = remainingPlayer, enemies = updatedEnemyList, projectiles = remaningProjectiles, currentScore = updatedScore, seed = generatedSeed, gameTime = updatedGameTime}
+          updatedGame                     = game {player = remainingPlayer, enemies = updatedEnemyList, projectiles = remaningProjectiles, currentScore = updatedScore, seed = generatedSeed, gameTime = updatedGameTime, particles = newListOfParticles}
           gameOverGame                    = game {gameState = GameOver}
 
 -- | Handle user input

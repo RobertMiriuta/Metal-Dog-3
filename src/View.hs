@@ -10,6 +10,7 @@ import Config
 import Player
 import Projectile
 import Enemy
+import Particle
 
 view :: MetalDogGame -> IO Picture
 view = return . viewPure
@@ -26,8 +27,10 @@ viewPure game
         halfSizeY           = (snd windowSizeFloat) / 2
         listOfProjectiles   = projectiles game
         listOfEnemies       = enemies game
+        listOfParticles     = particles game
         renderedplayerShip  = renderPlayer currentPlayer
         renderedprojectiles = renderProjectiles listOfProjectiles
+        renderedParticles   = renderParticles listOfParticles
         scr                 = currentScore game
         renderedenemies     = renderEnemies listOfEnemies
         activeArea          = renderActiveArea
@@ -37,8 +40,8 @@ viewPure game
         pause               = translate (-halfSizeX) (halfSizeY-60) pausePic
         gameOverPic         = scale 1.0 1.0.color orange.text $ show GameOver
         gameover            = translate (-halfSizeX) (-50.0) $ gameOverPic 
-        pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score])
-        picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score] ++ [pause])
+        pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score])
+        picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score] ++ [pause])
         picsGameOver        = pictures ([gameover] ++ [score])
 
 renderActiveArea :: Picture
@@ -63,6 +66,14 @@ drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP 
         ptTopRight      = (xP ptBottomRight, yP ptTopLeft)
         ptBottomRight   = bottomRight (getHitbox a)
         ptBottomLeft    = (xP ptTopLeft, yP ptBottomRight)
+
+renderParticles :: [Particle] -> [Picture]
+renderParticles [] = []
+renderParticles (x:xs) = (translate particlepositionX particlepositionY $ renderedParticle) : renderParticles xs
+    where particleposition  = Particle.position x
+          particlepositionX = xP particleposition
+          particlepositionY = yP particleposition
+          renderedParticle  = drawParticle x 
 
 renderProjectiles :: [Projectile] -> [Picture]
 renderProjectiles [] = []
@@ -95,3 +106,8 @@ drawPlayer player = color selectedColor $ playerPicture
 
 drawProjectile :: Picture
 drawProjectile = projectilePicture
+
+drawParticle :: Particle -> Picture
+drawParticle particle = color (colorAdjust (alpha)) $ particlePicture
+    where alpha = (Particle.age particle) / (lifespan particle)
+          colorAdjust a = makeColor 1 0 0 (1-a)

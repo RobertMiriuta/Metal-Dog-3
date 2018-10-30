@@ -6,6 +6,7 @@ import GenericTypes
 import Player
 import Enemy
 import Weapon
+import Particle
 import Projectile
 import GameTypes
 import Config
@@ -38,12 +39,15 @@ movePlayerWithVector player (x,y) = move player moveVector
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
 moveProjectiles time (x:xs)
-  |canBeRemoved       = moveProjectiles time xs
-  |otherwise          = movedProjectile : moveProjectiles time xs
+  |canBeRemoved       = moveProjectiles time xs 
+  |otherwise          = updatedProjectile : moveProjectiles time xs
   where projectilePosition = getPos x
         projectilePositionY = yP projectilePosition
         projectileMoveVector = Vctr time projectilePositionY
         movedProjectile = move x projectileMoveVector
+        oldAge = Projectile.age x
+        newAge = oldAge + time
+        updatedProjectile = movedProjectile {Projectile.age = newAge}
         canBeRemoved = isOutOfBounds movedProjectile windowSizeFloat
 
 moveEnemies :: Float -> [Enemy] -> [Enemy]
@@ -155,3 +159,12 @@ updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
         oldTime = passedTime oldWeapon
         newTime = oldTime + time
         newWeapon = oldWeapon {passedTime = newTime}
+
+createParticles :: [Projectile] -> [Particle]
+createParticles [] = []
+createParticles (x:xs)
+  | createNewParticle = newParticle : createParticles xs
+  | otherwise = createParticles xs
+    where projectilePosition  = getPos x
+          createNewParticle   = (Projectile.age x) < 0.6
+          newParticle         = standardParticle projectilePosition

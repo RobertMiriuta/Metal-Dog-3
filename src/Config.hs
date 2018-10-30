@@ -7,6 +7,7 @@ import Projectile
 import Weapon
 import Enemy
 import Player
+import Particle
 import System.Random
 
 --Window settings
@@ -163,7 +164,7 @@ projectilePicture = color projectileColor $ translate halfsize (-halfsize) $ rec
         size = standardProjectileSizeFloat
 
 standardProjectile :: Point -> Projectile
-standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox
+standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox 0.0
   where actualHitbox = HBox newTopLeft newBottomRight
         newTopLeft = pointAdd point (topLeft standardProjectileHitbox)
         newBottomRight = pointAdd point (bottomRight standardProjectileHitbox)
@@ -204,6 +205,15 @@ standardPlayerWeaponRechargeRate = 0.25
 
 standardPlayerWeapon :: Weapon
 standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRate
+-- particles
+
+standardParticle :: Point -> Particle
+standardParticle position = Prtcl 0.0 0.2 position True
+
+particlePicture :: Picture
+particlePicture = translate halfsize (-halfsize) $ rectangleSolid size size
+  where halfsize = standardProjectileSizeFloat / 2
+        size = standardProjectileSizeFloat
 
 -- initial values
 startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
@@ -213,6 +223,7 @@ startingKeys = []
 startingScore = Score 0
 startingState = Playing
 startingGameTime = 0.0
+startingParticles = []
 
 initialGame :: StdGen -> MetalDogGame
-initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime
+initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime startingParticles
