@@ -25,7 +25,6 @@ module GenericTypes where
   class Damageable a where
     getHealth :: a -> Int
     takeDamage :: a -> Int -> Maybe a
-    updateStatus :: a -> Int -> a
 
   --All moveable objects have a size associated with them
   --this is an extra requirement for the bounds calculations

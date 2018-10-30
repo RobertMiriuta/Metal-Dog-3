@@ -10,9 +10,11 @@ data MetalDogGame = Game {player::Player,
                           projectiles::[Projectile],
                           enemies :: [Enemy],
                           keysPressed :: [SpecialKey],
-                          currentScore::Score
+                          currentScore::Score,
+                          gameState :: Gamestate
                           --highscore::Score
                          }
 
 data Gamestate = Playing
                 |Paused
+                deriving Eq

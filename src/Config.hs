@@ -187,4 +187,4 @@ startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFire
 startingKeys = []
 startingScore = Score 0
 
-initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys startingScore
+initialGame = Game startingPlayer startingProjectiles startingEnemies startingKeys startingScore Playing

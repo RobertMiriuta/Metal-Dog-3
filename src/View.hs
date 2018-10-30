@@ -15,8 +15,11 @@ view :: MetalDogGame -> IO Picture
 view = return . viewPure
 
 viewPure :: MetalDogGame -> Picture
-viewPure game = pics
-  where currentPlayer       = player game
+viewPure game
+    |isPlaying = pics
+    |otherwise = picsPaused
+  where isPlaying           = (gameState game) == Playing
+        currentPlayer       = player game
         halfSizeX           = (fst windowSizeFloat) / 2
         halfSizeY           = (snd windowSizeFloat) / 2
         listOfProjectiles   = projectiles game
@@ -28,7 +31,10 @@ viewPure game = pics
         activeArea          = renderActiveArea
         scorePic            = scale 0.15 0.15.color orange.text $ show scr
         score               = translate (-halfSizeX) (halfSizeY-20) scorePic
+        pausePic            = scale 0.5 0.5.color orange.text $ show "Paused"
+        pause               = translate 0 0 pausePic
         pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score])
+        picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score] ++ [pause])
 
 renderActiveArea :: Picture
 renderActiveArea    = Pictures [boundary,axis]
