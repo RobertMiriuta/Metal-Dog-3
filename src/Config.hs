@@ -32,6 +32,8 @@ amountEnemyTypes = 5
 difficulty :: Int
 difficulty = 10
 
+multiplierIncrement :: Float
+multiplierIncrement = 1.0
 --Firework
 enemyFireworkPicture :: Picture
 enemyFireworkPicture = color enemyColor $ Polygon [(0,-10),(10,0),(10,-5),(25,-5),(25,-15),(10,-15),(10,-20)]

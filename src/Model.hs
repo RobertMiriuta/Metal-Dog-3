@@ -136,12 +136,14 @@ createRandomEnemy (kind, seed)
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
 
-generateEnemy :: StdGen -> [Enemy] -> ([Enemy], StdGen)
-generateEnemy seed xs
-    | length xs < difficulty = returnTuple
+generateEnemy :: StdGen -> [Enemy] -> Float -> ([Enemy], StdGen)
+generateEnemy seed xs multiplierfloat
+    | length xs < difficultyMultiplier = returnTuple
     | otherwise = ([], seed)
       where newEnem = createRandomEnemy (createRandomEnemyKind seed)
             returnTuple = ([fst newEnem], snd newEnem)
+            difficultyMultiplier = difficulty + multiplier
+            multiplier = round (multiplierfloat/multiplierIncrement)
 
 getReward :: [Enemy] -> Score
 getReward [] = Score 0
