@@ -16,10 +16,12 @@ view = return . viewPure
 
 viewPure :: MetalDogGame -> Picture
 viewPure game
-    |isPlaying = pics
-    |otherwise = picsPaused
+    |isPlaying  = pics
+    |isGameOver = picsGameOver
+    |otherwise  = picsPaused
   where isPlaying           = (gameState game) == Playing
         currentPlayer       = player game
+        isGameOver          = (gameState game) == GameOver
         halfSizeX           = (fst windowSizeFloat) / 2
         halfSizeY           = (snd windowSizeFloat) / 2
         listOfProjectiles   = projectiles game
@@ -33,8 +35,11 @@ viewPure game
         score               = translate (halfSizeX-200) ((-halfSizeY)+20) scorePic
         pausePic            = scale 0.5 0.5.color orange.text $ show Paused
         pause               = translate (-halfSizeX) (halfSizeY-60) pausePic
+        gameOverPic         = scale 1.0 1.0.color orange.text $ show GameOver
+        gameover            = translate (-halfSizeX) (-50.0) $ gameOverPic 
         pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score])
         picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score] ++ [pause])
+        picsGameOver        = pictures ([gameover] ++ [score])
 
 renderActiveArea :: Picture
 renderActiveArea    = Pictures [boundary,axis]

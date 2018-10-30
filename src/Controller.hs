@@ -9,13 +9,17 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
 import Data.List
+import Player
 
 -- | Handle one iteration of the game
 step :: Float -> MetalDogGame -> IO MetalDogGame
 step time game
-  |isPlaying   = return updatedGame
-  |otherwise   = return game
+  |isDead                = return gameOverGame
+  |isPlaying             = return updatedGame
+  |otherwise             = return game
     where isPlaying                       = (gameState game) == Playing
+          playerStatus                    = status currentPlayer
+          isDead                          = playerStatus == "dead"
           listOfEnemies                   = enemies game
           listOfProjectiles               = projectiles game
           currentPlayer                   = player game
@@ -37,6 +41,7 @@ step time game
           updatedEnemyList                = remainingEnemiesAfterCollision ++ generatedEnemies
           updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
           updatedGame                     = game {player = remainingPlayer, enemies = updatedEnemyList, projectiles = remaningProjectiles, currentScore = updatedScore, seed = generatedSeed}
+          gameOverGame                    = game {gameState = GameOver}
 
 -- | Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame
