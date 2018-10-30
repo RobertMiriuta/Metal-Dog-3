@@ -4,8 +4,10 @@ import Graphics.Gloss hiding (Point)
 import GameTypes
 import GenericTypes hiding (standardPlayerHitbox)
 import Projectile
+import Weapon
 import Enemy
 import Player
+import Particle
 import System.Random
 
 --Window settings
@@ -29,8 +31,10 @@ amountEnemyTypes :: Int
 amountEnemyTypes = 5
 
 difficulty :: Int
-difficulty = 30
+difficulty = 10
 
+multiplierIncrement :: Float
+multiplierIncrement = 1.0
 --Firework
 enemyFireworkPicture :: Picture
 enemyFireworkPicture = color enemyColor $ Polygon [(0,-10),(10,0),(10,-5),(25,-5),(25,-15),(10,-15),(10,-20)]
@@ -155,22 +159,28 @@ playerPicture = Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 
 projectileColor = red
 
 projectilePicture :: Picture
-projectilePicture = color projectileColor $ translate 2 (-2) $ rectangleSolid 4 4
+projectilePicture = color projectileColor $ translate halfsize (-halfsize) $ rectangleSolid size size
+  where halfsize = standardProjectileSizeFloat / 2
+        size = standardProjectileSizeFloat
 
 standardProjectile :: Point -> Projectile
-standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox
+standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox 0.0
   where actualHitbox = HBox newTopLeft newBottomRight
         newTopLeft = pointAdd point (topLeft standardProjectileHitbox)
         newBottomRight = pointAdd point (bottomRight standardProjectileHitbox)
 
 standardProjectileSize :: Int
-standardProjectileSize = 4
+standardProjectileSize = 10
+
+standardProjectileSizeFloat :: Float
+standardProjectileSizeFloat = fromIntegral standardProjectileSize
 
 standardProjectileSpeed :: Speed
 standardProjectileSpeed = Spd 200.0 0.0
 
 standardProjectileHitbox :: Hitbox
-standardProjectileHitbox = HBox (Pt 0 0) (Pt 4.0 (-4.0))
+standardProjectileHitbox = HBox (Pt 0 0) (Pt size (-size))
+  where size = standardProjectileSizeFloat
 
 --initial values
 playerSpawnCoordinates :: Point
@@ -190,13 +200,30 @@ standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 3
 standardPlayerHealth :: Int
 standardPlayerHealth = 2
 
+standardPlayerWeaponRechargeRate :: Float
+standardPlayerWeaponRechargeRate = 0.25
+
+standardPlayerWeapon :: Weapon
+standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRate
+-- particles
+
+standardParticle :: Point -> Particle
+standardParticle position = Prtcl 0.0 0.2 position True
+
+particlePicture :: Picture
+particlePicture = translate halfsize (-halfsize) $ rectangleSolid size size
+  where halfsize = standardProjectileSizeFloat / 2
+        size = standardProjectileSizeFloat
+
 -- initial values
-startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive"
+startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
 startingProjectiles = []
 startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
 startingKeys = []
 startingScore = Score 0
 startingState = Playing
+startingGameTime = 0.0
+startingParticles = []
 
 initialGame :: StdGen -> MetalDogGame
-initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState
+initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime startingParticles

@@ -1,13 +1,14 @@
 module Player where
 
   import GenericTypes
-
+  import Weapon
+  
   data Player = Plyr {position::Point,
                       movementSpeed::Speed,
                       hitbox::Hitbox,
                       health::Int,
-                      status::String
-                      } --activeWeapon::Weapon
+                      status::String,
+                      activeWeapon::Weapon}
                       deriving Eq
 
   instance Damageable Player where
