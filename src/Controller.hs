@@ -23,9 +23,12 @@ step time game
           listOfEnemies                   = enemies game
           listOfProjectiles               = projectiles game
           currentPlayer                   = player game
+          updatedPlayer                   = updatedPlayerWeapon currentPlayer time
           allPressedKeys                  = keysPressed game
-          newProjectiles                  = fireBullet currentPlayer allPressedKeys
-          movedPlayer                     = movePlayer currentPlayer allPressedKeys
+          newProjectilesAndPlayer         = fireBullet updatedPlayer allPressedKeys
+          newProjectiles                  = fst newProjectilesAndPlayer
+          newPlayer                       = snd newProjectilesAndPlayer
+          movedPlayer                     = movePlayer newPlayer allPressedKeys
           movedEnemies                    = moveEnemies time listOfEnemies
           movedProjectiles                = moveProjectiles time listOfProjectiles
           remainingObjects                = didEnemyGetHit movedProjectiles movedEnemies

@@ -5,6 +5,7 @@ module Model where
 import GenericTypes
 import Player
 import Enemy
+import Weapon
 import Projectile
 import GameTypes
 import Config
@@ -97,12 +98,18 @@ didProjectileHitEnemies p (x:xs)
   |otherwise = x : didProjectileHitEnemies p xs
     where isHit = isHitBy p x
 
-fireBullet :: Player -> [SpecialKey] -> [Projectile]
-fireBullet player [] = []
+fireBullet :: Player -> [SpecialKey] -> ([Projectile], Player)
+fireBullet player [] = ([], player)
 fireBullet player (x:xs)
-  |x == KeySpace = [standardProjectile firingPoint]
-  |otherwise = fireBullet player xs
-    where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
+  |x == KeySpace && readyToFire = ([createProjectileAt firingPoint], updatedPlayer)
+  |otherwise                    = fireBullet player xs
+    where currentWeapon             = activeWeapon player
+          usedWeapon                = currentWeapon {passedTime = 0.0}
+          readyToFire               = (passedTime currentWeapon) > (rechargeTime currentWeapon)
+          updatedPlayer             = player {activeWeapon = usedWeapon}
+          firingPoint               = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
+          playerWeapon              = activeWeapon player
+          createProjectileAt point  = (createProjectile playerWeapon) point 
 
 createRandomEnemyKind :: StdGen -> (EnemyKind, StdGen)
 createRandomEnemyKind seed
@@ -139,3 +146,10 @@ generateEnemy seed xs
 getReward :: [Enemy] -> Score
 getReward [] = Score 0
 getReward (x:xs) = (reward x) `additionScore` (getReward xs)
+
+updatedPlayerWeapon :: Player -> Float -> Player
+updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
+  where oldWeapon = activeWeapon player
+        oldTime = passedTime oldWeapon
+        newTime = oldTime + time
+        newWeapon = oldWeapon {passedTime = newTime}

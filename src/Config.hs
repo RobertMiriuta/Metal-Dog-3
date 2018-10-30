@@ -4,6 +4,7 @@ import Graphics.Gloss hiding (Point)
 import GameTypes
 import GenericTypes hiding (standardPlayerHitbox)
 import Projectile
+import Weapon
 import Enemy
 import Player
 import System.Random
@@ -29,7 +30,7 @@ amountEnemyTypes :: Int
 amountEnemyTypes = 5
 
 difficulty :: Int
-difficulty = 30
+difficulty = 10
 
 --Firework
 enemyFireworkPicture :: Picture
@@ -155,7 +156,9 @@ playerPicture = Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 
 projectileColor = red
 
 projectilePicture :: Picture
-projectilePicture = color projectileColor $ translate 2 (-2) $ rectangleSolid 4 4
+projectilePicture = color projectileColor $ translate halfsize (-halfsize) $ rectangleSolid size size
+  where halfsize = standardProjectileSizeFloat / 2
+        size = standardProjectileSizeFloat
 
 standardProjectile :: Point -> Projectile
 standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox
@@ -164,13 +167,17 @@ standardProjectile point = Prjtl standardProjectileSpeed point standardProjectil
         newBottomRight = pointAdd point (bottomRight standardProjectileHitbox)
 
 standardProjectileSize :: Int
-standardProjectileSize = 4
+standardProjectileSize = 10
+
+standardProjectileSizeFloat :: Float
+standardProjectileSizeFloat = fromIntegral standardProjectileSize
 
 standardProjectileSpeed :: Speed
 standardProjectileSpeed = Spd 200.0 0.0
 
 standardProjectileHitbox :: Hitbox
-standardProjectileHitbox = HBox (Pt 0 0) (Pt 4.0 (-4.0))
+standardProjectileHitbox = HBox (Pt 0 0) (Pt size (-size))
+  where size = standardProjectileSizeFloat
 
 --initial values
 playerSpawnCoordinates :: Point
@@ -190,8 +197,14 @@ standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 3
 standardPlayerHealth :: Int
 standardPlayerHealth = 2
 
+standardPlayerWeaponRechargeRate :: Float
+standardPlayerWeaponRechargeRate = 0.25
+
+standardPlayerWeapon :: Weapon
+standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRate
+
 -- initial values
-startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive"
+startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
 startingProjectiles = []
 startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
 startingKeys = []
