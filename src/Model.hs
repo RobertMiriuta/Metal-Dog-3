@@ -11,10 +11,8 @@ import Config
 import System.Random
 import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, KeyRight, KeySpace))
 
-
 initialState :: MetalDogGame
 initialState = initialGame
-
 
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player

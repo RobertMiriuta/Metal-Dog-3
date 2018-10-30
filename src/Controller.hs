@@ -64,6 +64,10 @@ inputKey (EventKey (SpecialKey key) Up _ _) game = case key of
               removeDown  = newKeys KeyDown
               removeLeft  = newKeys KeyLeft
               removeRight = newKeys KeyRight
-
+inputKey (EventKey (Char 'p') Down _ _) game
+  |isPlaying = game {gameState = Paused}
+  |otherwise = game {gameState = Playing}
+    where isPlaying = (gameState game) == Playing
+inputKey (EventKey (Char 'r') Down _ _) game = initialState --Resets the game
 inputKey _ game = game -- Otherwise keep the same
 

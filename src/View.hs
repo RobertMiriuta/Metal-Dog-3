@@ -30,9 +30,9 @@ viewPure game
         renderedenemies     = renderEnemies listOfEnemies
         activeArea          = renderActiveArea
         scorePic            = scale 0.15 0.15.color orange.text $ show scr
-        score               = translate (-halfSizeX) (halfSizeY-20) scorePic
-        pausePic            = scale 0.5 0.5.color orange.text $ show "Paused"
-        pause               = translate 0 0 pausePic
+        score               = translate (halfSizeX-200) ((-halfSizeY)+20) scorePic
+        pausePic            = scale 0.5 0.5.color orange.text $ show Paused
+        pause               = translate (-halfSizeX) (halfSizeY-60) pausePic
         pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score])
         picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ [activeArea] ++ [score] ++ [pause])
 
