@@ -89,7 +89,7 @@ enemyPostmanHitbox :: Hitbox
 enemyPostmanHitbox = HBox (Pt 0.0 0.0) (Pt 20.0 (-35.0))
 
 enemyPostmanSpeed :: Speed
-enemyPostmanSpeed = Spd (-35.0) 25.0
+enemyPostmanSpeed = Spd (-35.0) 0.0
 
 enemyPostmanReward :: Score
 enemyPostmanReward = Score 40
@@ -110,10 +110,10 @@ enemyCarHealth :: Int
 enemyCarHealth = 1
 
 enemyCarHitbox :: Hitbox
-enemyCarHitbox = HBox (Pt 0.0 0.0) (Pt 25 (-13))
+enemyCarHitbox = HBox (Pt 0.0 0.0) (Pt 25.0 (-13.0))
 
 enemyCarSpeed :: Speed
-enemyCarSpeed = Spd (-35.0) (-25.0)
+enemyCarSpeed = Spd (-35.0) 0.0
 
 enemyCarReward :: Score
 enemyCarReward = Score 40
