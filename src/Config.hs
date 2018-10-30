@@ -28,9 +28,8 @@ enemyColor = green
 amountEnemyTypes :: Int
 amountEnemyTypes = 5
 
---between 1 and 50 where 50 is the most difficult
 difficulty :: Int
-difficulty = 20
+difficulty = 15
 
 --Firework
 enemyFireworkPicture :: Picture
@@ -180,7 +179,7 @@ playerSpawnCoordinates = (Pt spawnX spawnY)
         spawnY = 0.0 --middle of the screen
 
 standardPlayerSpeed :: Speed
-standardPlayerSpeed = Spd 2.0 2.0
+standardPlayerSpeed = Spd 6.0 6.0
 
 standardPlayerHitbox :: Hitbox
 standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 30.0 (-10.0)))

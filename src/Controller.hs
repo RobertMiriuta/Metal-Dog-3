@@ -31,8 +31,12 @@ step time game
           remainingEnemiesAfterCollision  = fst damagedPlayerEnemies
           remainingPlayer                 = snd damagedPlayerEnemies
           deadEnemies                     = movedEnemies \\ remainingEnemiesAfterKills
+          generatedEnemies                = fst enemySeedList
+          generatedSeed                   = snd enemySeedList
+          enemySeedList                   = generateEnemy (seed game) remainingEnemiesAfterCollision
+          updatedEnemyList                = remainingEnemiesAfterCollision ++ generatedEnemies
           updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
-          updatedGame                     = game {player = remainingPlayer, enemies = remainingEnemiesAfterCollision, projectiles = remaningProjectiles, currentScore = updatedScore}
+          updatedGame                     = game {player = remainingPlayer, enemies = updatedEnemyList, projectiles = remaningProjectiles, currentScore = updatedScore, seed = generatedSeed}
 
 -- | Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame

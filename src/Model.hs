@@ -111,9 +111,9 @@ createRandomEnemyType seed
     | num == 2 = (Postman, newGen)
     | num == 3 = (Car, newGen)
     | otherwise = (VacuumCleaner, newGen)
-      where ranGen1 = random seed
+      where ranGen1 = randomR (0, (amountEnemyTypes - 1)) seed
             newGen = snd ranGen1
-            num = abs ((fst ranGen1) `mod` (amountEnemyTypes - 1))
+            num = abs (fst ranGen1)
 
 createRandomEnemy :: (EnemyKind, StdGen) -> (Enemy, StdGen)
 createRandomEnemy (kind, seed)
@@ -121,12 +121,19 @@ createRandomEnemy (kind, seed)
     | kind == Cat          = (enemyCar ranPos, newSeed)
     | kind == Postman      = (enemyPostman ranPos, newSeed)
     | kind == Car          = (enemyCar ranPos, newSeed)
-    | kind == VacuumCleaner = (enemyVacuumCleaner ranPos, newSeed)
+    | otherwise = (enemyVacuumCleaner ranPos, newSeed)
       where ranGen = randomR spawnBoundY seed
             posX = (fst windowSizeFloat)/2
             ranPosY = fst ranGen
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
+
+generateEnemy :: StdGen -> [Enemy] -> ([Enemy], StdGen)
+generateEnemy seed xs
+    | length xs < difficulty = returnTuple
+    | otherwise = ([], seed)
+      where newEnem = createRandomEnemy (createRandomEnemyType seed)
+            returnTuple = ([fst newEnem], snd newEnem)
 
 getReward :: [Enemy] -> Score
 getReward [] = Score 0
