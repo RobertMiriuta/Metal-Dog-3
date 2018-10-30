@@ -104,8 +104,29 @@ fireBullet player (x:xs)
   |otherwise = fireBullet player xs
     where firingPoint = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
 
-createRandomEnemy :: StdGen -> Enemy
-createRandomEnemy seed = undefined
+createRandomEnemyType :: StdGen -> (EnemyKind, StdGen)
+createRandomEnemyType seed
+    | num == 0 = (Firework, newGen)
+    | num == 1 = (Cat, newGen)
+    | num == 2 = (Postman, newGen)
+    | num == 3 = (Car, newGen)
+    | otherwise = (VacuumCleaner, newGen)
+      where ranGen1 = random seed
+            newGen = snd ranGen1
+            num = abs ((fst ranGen1) `mod` (amountEnemyTypes - 1))
+
+createRandomEnemy :: (EnemyKind, StdGen) -> (Enemy, StdGen)
+createRandomEnemy (kind, seed)
+    | kind == Firework     = (enemyFirework ranPos, newSeed)
+    | kind == Cat          = (enemyCar ranPos, newSeed)
+    | kind == Postman      = (enemyPostman ranPos, newSeed)
+    | kind == Car          = (enemyCar ranPos, newSeed)
+    | kind == VacuumCleaner = (enemyVacuumCleaner ranPos, newSeed)
+      where ranGen = randomR spawnBoundY seed
+            posX = (fst windowSizeFloat)/2
+            ranPosY = fst ranGen
+            ranPos = Pt posX ranPosY
+            newSeed = snd ranGen
 
 getReward :: [Enemy] -> Score
 getReward [] = Score 0

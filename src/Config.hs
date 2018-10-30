@@ -16,11 +16,21 @@ windowSizeFloat = (800.0, 400.0)
 windowSizeInt :: (Int, Int)
 windowSizeInt = (800, 400)
 
+spawnBoundY :: (Float, Float)
+spawnBoundY = (-165.0, 200.0)
+
 --Enemies:
 --Enemy appearance and other values
 --top left corner of the picture has to match the top left corner of the hitbox
 
 enemyColor = green
+
+amountEnemyTypes :: Int
+amountEnemyTypes = 5
+
+--between 1 and 50 where 50 is the most difficult
+difficulty :: Int
+difficulty = 20
 
 --Firework
 enemyFireworkPicture :: Picture
