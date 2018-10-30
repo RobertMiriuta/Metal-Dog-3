@@ -12,24 +12,27 @@ import Data.List
 
 -- | Handle one iteration of the game
 step :: Float -> MetalDogGame -> IO MetalDogGame
-step time game = return updatedGame
-  where listOfEnemies                   = enemies game
-        listOfProjectiles               = projectiles game
-        currentPlayer                   = player game
-        allPressedKeys                  = keysPressed game
-        newProjectiles                  = fireBullet currentPlayer allPressedKeys
-        movedPlayer                     = movePlayer currentPlayer allPressedKeys
-        movedEnemies                    = moveEnemies time listOfEnemies
-        movedProjectiles                = moveProjectiles time listOfProjectiles
-        remainingObjects                = didEnemyGetHit movedProjectiles movedEnemies
-        remaningProjectiles             = (fst remainingObjects) ++ newProjectiles 
-        remainingEnemiesAfterKills      = snd remainingObjects
-        damagedPlayerEnemies            = didPlayerGetHit remainingEnemiesAfterKills movedPlayer
-        remainingEnemiesAfterCollision  = fst damagedPlayerEnemies
-        remainingPlayer                 = snd damagedPlayerEnemies
-        deadEnemies                     = movedEnemies \\ remainingEnemiesAfterKills
-        updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
-        updatedGame                     = game {player = remainingPlayer, enemies = remainingEnemiesAfterCollision, projectiles = remaningProjectiles, currentScore = updatedScore}
+step time game
+  |isPlaying   = return updatedGame
+  |otherwise   = return game
+    where isPlaying                       = (gameState game) == Playing 
+          listOfEnemies                   = enemies game
+          listOfProjectiles               = projectiles game
+          currentPlayer                   = player game
+          allPressedKeys                  = keysPressed game
+          newProjectiles                  = fireBullet currentPlayer allPressedKeys
+          movedPlayer                     = movePlayer currentPlayer allPressedKeys
+          movedEnemies                    = moveEnemies time listOfEnemies
+          movedProjectiles                = moveProjectiles time listOfProjectiles
+          remainingObjects                = didEnemyGetHit movedProjectiles movedEnemies
+          remaningProjectiles             = (fst remainingObjects) ++ newProjectiles 
+          remainingEnemiesAfterKills      = snd remainingObjects
+          damagedPlayerEnemies            = didPlayerGetHit remainingEnemiesAfterKills movedPlayer
+          remainingEnemiesAfterCollision  = fst damagedPlayerEnemies
+          remainingPlayer                 = snd damagedPlayerEnemies
+          deadEnemies                     = movedEnemies \\ remainingEnemiesAfterKills
+          updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
+          updatedGame                     = game {player = remainingPlayer, enemies = remainingEnemiesAfterCollision, projectiles = remaningProjectiles, currentScore = updatedScore}
 
 -- | Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame
@@ -61,6 +64,10 @@ inputKey (EventKey (SpecialKey key) Up _ _) game = case key of
               removeDown  = newKeys KeyDown
               removeLeft  = newKeys KeyLeft
               removeRight = newKeys KeyRight
-
+inputKey (EventKey (Char 'p') Down _ _) game
+  |isPlaying = game {gameState = Paused}
+  |otherwise = game {gameState = Playing}
+    where isPlaying = (gameState game) == Playing
+inputKey (EventKey (Char 'r') Down _ _) game = initialState --Resets the game
 inputKey _ game = game -- Otherwise keep the same
 

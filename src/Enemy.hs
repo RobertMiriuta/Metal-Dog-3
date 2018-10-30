@@ -23,8 +23,7 @@ instance Damageable Enemy where
   takeDamage enmy dmg | newHealth <= 0 = Nothing
                       | otherwise = Just (enmy {health = newHealth})
                       where newHealth = (getHealth enmy) - dmg
-  updateStatus enmy dmg = enmy
-
+                      
 instance Moveable Enemy where
   getHitbox = hitbox
   getPos = topLeft . hitbox
