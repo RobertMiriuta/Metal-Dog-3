@@ -17,4 +17,5 @@ data MetalDogGame = Game {player::Player,
 
 data Gamestate = Playing
                 |Paused
+                |GameOver
                 deriving (Eq,Show)
