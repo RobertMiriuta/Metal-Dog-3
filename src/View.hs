@@ -68,7 +68,7 @@ renderEnemies (x:xs) = Pictures[(translate enemyPositionX enemyPositionY $ (draw
         enemyPositionY = yP enemyPosition
 
 drawEnemy :: EnemyKind -> Picture
-drawEnemy Firework = enemyFireworkPicture
+drawEnemy Firework      = enemyFireworkPicture
 drawEnemy Cat           = enemyCatPicture
 drawEnemy Postman       = enemyPostmanPicture
 drawEnemy Car           = enemyCarPicture
