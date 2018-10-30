@@ -210,6 +210,7 @@ startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFire
 startingKeys = []
 startingScore = Score 0
 startingState = Playing
+startingGameTime = 0.0
 
 initialGame :: StdGen -> MetalDogGame
-initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState
+initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime

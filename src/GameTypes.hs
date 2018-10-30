@@ -13,7 +13,8 @@ data MetalDogGame = Game {player::Player,
                           keysPressed :: [SpecialKey],
                           seed::StdGen,
                           currentScore::Score,
-                          gameState :: Gamestate
+                          gameState :: Gamestate,
+                          gameTime :: Float
                           --highscore::Score
                          }
 
