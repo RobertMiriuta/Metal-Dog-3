@@ -143,9 +143,9 @@ createRandomEnemy player (kind, seed)
             newFireworkSpeed = calcSpeedToPoint (enemyFirework ranPos) (getPos player)
 
 --Player is passed to get position information for heat seaking missiles
-generateEnemy :: Player -> StdGen -> [Enemy] -> ([Enemy], StdGen)
-generateEnemy player seed xs
-    | length xs < difficulty = returnTuple
+generateEnemy :: Player -> StdGen -> [Enemy] -> Float -> ([Enemy], StdGen)
+generateEnemy player seed xs multiplierfloat
+    | length xs < difficultyMultiplier = returnTuple
     | otherwise = ([], seed)
       where newEnem = createRandomEnemy player (createRandomEnemyKind seed)
             returnTuple = ([fst newEnem], snd newEnem)

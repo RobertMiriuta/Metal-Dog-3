@@ -52,10 +52,10 @@ module GenericTypes where
                         bottomYsecond = yP (bottomRight (getHitbox second))
     calcSpeedToPoint :: a -> Point -> Speed
     calcSpeedToPoint a pt = Spd (xP newSpeedVec) (yP newSpeedVec)
-      where bigVector = pointSubtract (getPos a) pt
+      where bigVector = pointSubtract pt (getPos a)
             speedNorm = getSpeedVectorMagnitude (getSpeed a)
             bigNorm = getSpeedVectorMagnitude (Spd (xP bigVector) (yP bigVector))
-            normalizer = bigNorm / speedNorm
+            normalizer = speedNorm / bigNorm
             newSpeedVec = pointDivideScalar bigVector normalizer
 
   getSpeedVectorMagnitude :: Speed -> Float

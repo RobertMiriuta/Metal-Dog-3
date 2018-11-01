@@ -46,7 +46,7 @@ step time game
           deadEnemies                     = movedEnemies \\ remainingEnemiesAfterKills
           generatedEnemies                = fst enemySeedList
           generatedSeed                   = snd enemySeedList
-          enemySeedList                   = generateEnemy currentPlayer (seed game) remainingEnemiesAfterCollision
+          enemySeedList                   = generateEnemy currentPlayer (seed game) remainingEnemiesAfterCollision updatedGameTime
           updatedEnemyList                = remainingEnemiesAfterCollision ++ generatedEnemies
           updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
           oldGameTime                     = gameTime game
