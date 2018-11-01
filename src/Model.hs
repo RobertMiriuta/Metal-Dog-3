@@ -162,9 +162,8 @@ updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
 
 createParticles :: [Projectile] -> [Particle]
 createParticles [] = []
-createParticles (x:xs)
-  | createNewParticle = newParticle : createParticles xs
-  | otherwise = createParticles xs
+createParticles (x:xs) = newParticle : createParticles xs
     where projectilePosition  = getPos x
-          createNewParticle   = (Projectile.age x) < 0.6
           newParticle         = standardParticle projectilePosition
+  -- | createNewParticle = newParticle : createParticles xs
+  -- | otherwise = createParticles xs

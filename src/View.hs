@@ -73,7 +73,8 @@ renderParticles (x:xs) = (translate particlepositionX particlepositionY $ render
     where particleposition  = Particle.position x
           particlepositionX = xP particleposition
           particlepositionY = yP particleposition
-          renderedParticle  = drawParticle x 
+          particleAge       = Particle.age x
+          renderedParticle  = drawParticle particleAge x 
 
 renderProjectiles :: [Projectile] -> [Picture]
 renderProjectiles [] = []
@@ -107,7 +108,12 @@ drawPlayer player = color selectedColor $ playerPicture
 drawProjectile :: Picture
 drawProjectile = projectilePicture
 
-drawParticle :: Particle -> Picture
-drawParticle particle = color (colorAdjust (alpha)) $ particlePicture
+drawParticle :: Float -> Particle -> Picture
+drawParticle age particle = color (colorAdjust (alpha)) $ adjustedPicture
     where alpha = (Particle.age particle) / (lifespan particle)
-          colorAdjust a = makeColor 1 0 0 (1-a)
+          colorAdjust a = makeColor 1 1 0 (1-(getAlpha a))
+          getAlpha a
+            | alpha > 0 = alpha
+            | otherwise = 0
+                where alpha = (0.9 - a)
+          adjustedPicture = particlePicture age

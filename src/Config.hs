@@ -208,12 +208,13 @@ standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRa
 -- particles
 
 standardParticle :: Point -> Particle
-standardParticle position = Prtcl 0.0 0.2 position True
+standardParticle position = Prtcl 0.0 0.5 position True
 
-particlePicture :: Picture
-particlePicture = translate halfsize (-halfsize) $ rectangleSolid size size
-  where halfsize = standardProjectileSizeFloat / 2
-        size = standardProjectileSizeFloat
+particlePicture :: Float -> Picture
+particlePicture age = translate halfsize (-halfsize) $ rectangleSolid size size
+  where halfsize = standardProjectileSizeFloat / 4
+        sumthing = age * standardProjectileSizeFloat
+        size = standardProjectileSizeFloat - sumthing
 
 -- initial values
 startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
