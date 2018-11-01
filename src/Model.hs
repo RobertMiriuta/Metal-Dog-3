@@ -116,9 +116,10 @@ createRandomEnemyKind seed
             numF = abs (fst ranGen1)
             num = numF - (numF `mod` 1)
 
-createRandomEnemy :: (EnemyKind, StdGen) -> (Enemy, StdGen)
-createRandomEnemy (kind, seed)
-    | kind == Firework     = (enemyFirework ranPos, newSeed)
+--Player is passed to get position information for heat seaking missiles
+createRandomEnemy :: Player -> (EnemyKind, StdGen) -> (Enemy, StdGen)
+createRandomEnemy player (kind, seed)
+    | kind == Firework     = ((enemyFirework ranPos){Enemy.speed = newFireworkSpeed}, newSeed)
     | kind == Cat          = (enemyCat ranPos, newSeed)
     | kind == Postman      = (enemyPostman ranPos, newSeed)
     | kind == Car          = (enemyCar ranPos, newSeed)
@@ -128,12 +129,14 @@ createRandomEnemy (kind, seed)
             ranPosY = fst ranGen
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
+            newFireworkSpeed = calcSpeedToPoint (enemyFirework ranPos) (getPos player)
 
-generateEnemy :: StdGen -> [Enemy] -> ([Enemy], StdGen)
-generateEnemy seed xs
+--Player is passed to get position information for heat seaking missiles
+generateEnemy :: Player -> StdGen -> [Enemy] -> ([Enemy], StdGen)
+generateEnemy player seed xs
     | length xs < difficulty = returnTuple
     | otherwise = ([], seed)
-      where newEnem = createRandomEnemy (createRandomEnemyKind seed)
+      where newEnem = createRandomEnemy player (createRandomEnemyKind seed)
             returnTuple = ([fst newEnem], snd newEnem)
 
 getReward :: [Enemy] -> Score

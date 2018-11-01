@@ -16,7 +16,7 @@ module GenericTypes where
   data Score = Score Int
       deriving (Show, Eq)
 
-  additionScore :: Score -> Score -> Score 
+  additionScore :: Score -> Score -> Score
   additionScore (Score a) (Score b) = Score (a+b)
 
   standardPlayerHitbox :: Hitbox
@@ -36,7 +36,7 @@ module GenericTypes where
     isOutOfBounds :: a -> (Float, Float) -> Bool
     getHitbox :: a -> Hitbox
     isHitBy :: Moveable b => a -> b -> Bool
-    isHitBy first second 
+    isHitBy first second
                 | topXfirst > bottomXsecond = False
                 | topYfirst < bottomYsecond = False
                 | bottomXfirst < topXsecond = False
@@ -50,9 +50,27 @@ module GenericTypes where
                         bottomXsecond = xP (bottomRight (getHitbox second))
                         bottomYfirst = yP (bottomRight (getHitbox first))
                         bottomYsecond = yP (bottomRight (getHitbox second))
+    calcSpeedToPoint :: a -> Point -> Speed
+    calcSpeedToPoint a pt = Spd (xP newSpeedVec) (yP newSpeedVec)
+      where bigVector = pointSubtract (getPos a) pt
+            speedNorm = getSpeedVectorMagnitude (getSpeed a)
+            bigNorm = getSpeedVectorMagnitude (Spd (xP bigVector) (yP bigVector))
+            normalizer = bigNorm / speedNorm
+            newSpeedVec = pointDivideScalar bigVector normalizer
+
+  getSpeedVectorMagnitude :: Speed -> Float
+  getSpeedVectorMagnitude a = sqrt (xSpd * xSpd + ySpd * ySpd)
+    where xSpd = speedPerTickX  a
+          ySpd = speedPerTickY  a
 
   multVectorSpeed :: Vector -> Speed -> Vector
   multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
 
   pointAdd :: Point -> Point -> Point
   pointAdd (Pt a b) (Pt c d) = Pt (a+c) (b+d)
+
+  pointSubtract :: Point -> Point -> Point
+  pointSubtract (Pt a b) (Pt c d) = Pt (a-c) (b-d)
+
+  pointDivideScalar :: Point -> Float -> Point
+  pointDivideScalar (Pt a b) scalar = Pt (a/scalar) (b/scalar)

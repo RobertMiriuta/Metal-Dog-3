@@ -42,7 +42,7 @@ enemyFireworkHealth :: Int
 enemyFireworkHealth = 1
 
 enemyFireworkSpeed :: Speed
-enemyFireworkSpeed = (Spd (-100.0) 0.0)
+enemyFireworkSpeed = (Spd (-150.0) 0.0)
 
 enemyFireworkReward :: Score
 enemyFireworkReward = Score 50
