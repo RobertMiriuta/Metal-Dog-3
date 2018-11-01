@@ -6,7 +6,9 @@ module Projectile where
                            position :: Point,
                            --damage :: Int,
                            size :: Int,
-                           hitbox :: Hitbox}
+                           hitbox :: Hitbox,
+                           age :: Float
+                           }
 
   instance Moveable Projectile where
     getPos = topLeft . hitbox
