@@ -1,4 +1,4 @@
-name:                gloss-counter
+name:                metal-dog
 version:             0.1.0.0
 license-file:        LICENSE
 author:              Alejandro Serrano
@@ -7,7 +7,7 @@ category:            Game
 build-type:          Simple
 cabal-version:       >=1.10
 
-executable gloss-counter
+executable metal-dog
   main-is:             Main.hs
   build-depends:       base >= 4 && < 5,
                        gloss,
