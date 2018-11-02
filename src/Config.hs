@@ -51,8 +51,8 @@ enemyFireworkSpeed = (Spd (-150.0) 0.0)
 enemyFireworkReward :: Score
 enemyFireworkReward = Score 50
 
-enemyFirework :: Point -> Enemy
-enemyFirework pt = Enemy Firework enemyFireworkHealth pt newHitbox enemyFireworkSpeed enemyFireworkReward
+enemyFirework :: Point -> Speed -> Enemy
+enemyFirework pt spd = Enemy Firework enemyFireworkHealth pt newHitbox spd enemyFireworkReward
     where newHitbox = HBox newTL newBR
           newTL     = pointAdd pt (topLeft enemyFireworkHitbox)
           newBR     = pointAdd pt (bottomRight enemyFireworkHitbox)
@@ -219,7 +219,7 @@ particlePicture age = translate halfsize (-halfsize) $ rectangleSolid size size
 -- initial values
 startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
 startingProjectiles = []
-startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
+startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0) enemyFireworkSpeed]
 startingKeys = []
 startingScore = Score 0
 startingState = Playing

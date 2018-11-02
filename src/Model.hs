@@ -130,7 +130,7 @@ createRandomEnemyKind seed
 --Player is passed to get position information for heat seaking missiles
 createRandomEnemy :: Player -> (EnemyKind, StdGen) -> (Enemy, StdGen)
 createRandomEnemy player (kind, seed)
-    | kind == Firework     = ((enemyFirework ranPos){Enemy.speed = newFireworkSpeed}, newSeed)
+    | kind == Firework     = (createdFirework, newSeed)
     | kind == Cat          = (enemyCat ranPos, newSeed)
     | kind == Postman      = (enemyPostman ranPos, newSeed)
     | kind == Car          = (enemyCar ranPos, newSeed)
@@ -140,7 +140,8 @@ createRandomEnemy player (kind, seed)
             ranPosY = fst ranGen
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
-            newFireworkSpeed = calcSpeedToPoint (enemyFirework ranPos) (getPos player)
+            newFireworkSpeed = calcSpeedToPoint (enemyFirework ranPos enemyFireworkSpeed) (getPos player)
+            createdFirework = enemyFirework ranPos newFireworkSpeed
 
 --Player is passed to get position information for heat seaking missiles
 generateEnemy :: Player -> StdGen -> [Enemy] -> Float -> ([Enemy], StdGen)

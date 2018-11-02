@@ -56,7 +56,7 @@ module GenericTypes where
             speedNorm = getSpeedVectorMagnitude (getSpeed a)
             bigNorm = getSpeedVectorMagnitude (Spd (xP bigVector) (yP bigVector))
             normalizer = speedNorm / bigNorm
-            newSpeedVec = pointDivideScalar bigVector normalizer
+            newSpeedVec = pointMultScalar bigVector normalizer
 
   getSpeedVectorMagnitude :: Speed -> Float
   getSpeedVectorMagnitude a = sqrt (xSpd * xSpd + ySpd * ySpd)
@@ -74,3 +74,6 @@ module GenericTypes where
 
   pointDivideScalar :: Point -> Float -> Point
   pointDivideScalar (Pt a b) scalar = Pt (a/scalar) (b/scalar)
+
+  pointMultScalar :: Point -> Float -> Point
+  pointMultScalar (Pt a b) scalar = Pt (a*scalar) (b*scalar)
