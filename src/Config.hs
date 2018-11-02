@@ -54,8 +54,8 @@ enemyFireworkReward = Score 50
 enemyFirework :: Point -> Speed -> Enemy
 enemyFirework pt spd = Enemy Firework enemyFireworkHealth pt newHitbox spd enemyFireworkReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyFireworkHitbox)
-          newBR     = pointAdd pt (bottomRight enemyFireworkHitbox)
+          newTL     = iAdd pt (topLeft enemyFireworkHitbox)
+          newBR     = iAdd pt (bottomRight enemyFireworkHitbox)
 
 --Cat
 enemyCatPicture :: Picture
@@ -78,8 +78,8 @@ enemyCatReward = Score 20
 enemyCat :: Point -> Enemy
 enemyCat pt = Enemy Cat enemyCatHealth pt newHitbox enemyCatSpeed enemyCatReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyCatHitbox)
-          newBR     = pointAdd pt (bottomRight enemyCatHitbox)
+          newTL     = iAdd pt (topLeft enemyCatHitbox)
+          newBR     = iAdd pt (bottomRight enemyCatHitbox)
 
 --Postman
 enemyPostmanPicture :: Picture
@@ -101,8 +101,8 @@ enemyPostmanReward = Score 40
 enemyPostman :: Point -> Enemy
 enemyPostman pt = Enemy Postman enemyPostmanHealth pt newHitbox enemyPostmanSpeed enemyPostmanReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyPostmanHitbox)
-          newBR     = pointAdd pt (bottomRight enemyPostmanHitbox)
+          newTL     = iAdd pt (topLeft enemyPostmanHitbox)
+          newBR     = iAdd pt (bottomRight enemyPostmanHitbox)
 
 --Car
 enemyCarPicture :: Picture
@@ -125,8 +125,8 @@ enemyCarReward = Score 40
 enemyCar :: Point -> Enemy
 enemyCar pt = Enemy Car enemyCarHealth pt newHitbox enemyCarSpeed enemyCarReward
   where newHitbox = HBox newTL newBR
-        newTL     = pointAdd pt (topLeft enemyCarHitbox)
-        newBR     = pointAdd pt (bottomRight enemyCarHitbox)
+        newTL     = iAdd pt (topLeft enemyCarHitbox)
+        newBR     = iAdd pt (bottomRight enemyCarHitbox)
 
 --Vacuum Cleaner
 enemyVacuumCleanerPicture :: Picture
@@ -147,8 +147,8 @@ enemyVacuumCleanerReward = Score 100
 enemyVacuumCleaner :: Point -> Enemy
 enemyVacuumCleaner pt = Enemy VacuumCleaner enemyVacuumCleanerHealth pt newHitbox enemyVacuumCleanerSpeed enemyVacuumCleanerReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyVacuumCleanerHitbox)
-          newBR     = pointAdd pt (bottomRight enemyVacuumCleanerHitbox)
+          newTL     = iAdd pt (topLeft enemyVacuumCleanerHitbox)
+          newBR     = iAdd pt (bottomRight enemyVacuumCleanerHitbox)
 --Player appearance and other values and ini
 
 playerPicture :: Picture
@@ -166,8 +166,8 @@ projectilePicture = color projectileColor $ translate halfsize (-halfsize) $ rec
 standardProjectile :: Point -> Projectile
 standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox 0.0
   where actualHitbox = HBox newTopLeft newBottomRight
-        newTopLeft = pointAdd point (topLeft standardProjectileHitbox)
-        newBottomRight = pointAdd point (bottomRight standardProjectileHitbox)
+        newTopLeft = iAdd point (topLeft standardProjectileHitbox)
+        newBottomRight = iAdd point (bottomRight standardProjectileHitbox)
 
 standardProjectileSize :: Int
 standardProjectileSize = 10
@@ -192,7 +192,7 @@ standardPlayerSpeed :: Speed
 standardPlayerSpeed = Spd 6.0 6.0
 
 standardPlayerHitbox :: Hitbox
-standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 30.0 (-10.0)))
+standardPlayerHitbox = HBox (iAdd spawn (Pt 0.0 10.0)) (iAdd spawn (Pt 30.0 (-10.0)))
   where spawnX = (-(fst windowSizeFloat) / 2) + 50
         spawnY = 0.0
         spawn  = Pt spawnX spawnY

@@ -16,11 +16,14 @@ module GenericTypes where
   data Score = Score Int
       deriving (Show, Eq)
 
-  additionScore :: Score -> Score -> Score
-  additionScore (Score a) (Score b) = Score (a+b)
-
   standardPlayerHitbox :: Hitbox
   standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
+
+  class Mathable a where
+    iAdd :: a -> a -> a
+    iMult :: a -> a -> a
+    iSub :: a -> a -> a
+    iMultScalar :: a -> Float -> a
 
   class Damageable a where
     getHealth :: a -> Int
@@ -52,11 +55,11 @@ module GenericTypes where
                         bottomYsecond = yP (bottomRight (getHitbox second))
     calcSpeedToPoint :: a -> Point -> Speed
     calcSpeedToPoint a pt = Spd (xP newSpeedVec) (yP newSpeedVec)
-      where bigVector = pointSubtract pt (getPos a)
+      where bigVector = iSub pt (getPos a)
             speedNorm = getSpeedVectorMagnitude (getSpeed a)
             bigNorm = getSpeedVectorMagnitude (Spd (xP bigVector) (yP bigVector))
             normalizer = speedNorm / bigNorm
-            newSpeedVec = pointMultScalar bigVector normalizer
+            newSpeedVec = iMultScalar bigVector normalizer
 
   getSpeedVectorMagnitude :: Speed -> Float
   getSpeedVectorMagnitude a = sqrt (xSpd * xSpd + ySpd * ySpd)
@@ -66,14 +69,26 @@ module GenericTypes where
   multVectorSpeed :: Vector -> Speed -> Vector
   multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
 
-  pointAdd :: Point -> Point -> Point
-  pointAdd (Pt a b) (Pt c d) = Pt (a+c) (b+d)
+  instance Mathable Point where
+    iAdd (Pt a b) (Pt c d)      = Pt (a+c) (b+d)
+    iSub (Pt a b) (Pt c d)      = Pt (a-c) (b-d)
+    iMult (Pt a b) (Pt c d)     = Pt (a*c) (b*d)
+    iMultScalar (Pt a b) scalar = Pt (a*scalar) (b*scalar)
 
-  pointSubtract :: Point -> Point -> Point
-  pointSubtract (Pt a b) (Pt c d) = Pt (a-c) (b-d)
+  instance Mathable Vector where
+    iAdd (Vctr a b) (Vctr c d)    = Vctr (a+c) (b+d)
+    iSub (Vctr a b) (Vctr c d)    = Vctr (a-c) (b-d)
+    iMult (Vctr a b) (Vctr c d)   = Vctr (a*c) (b*d)
+    iMultScalar (Vctr a b) scalar = Vctr (a*scalar) (b*scalar)
 
-  pointDivideScalar :: Point -> Float -> Point
-  pointDivideScalar (Pt a b) scalar = Pt (a/scalar) (b/scalar)
+  instance Mathable Score where
+    iAdd (Score a) (Score b)     = Score (a+b)
+    iSub (Score a) (Score b)     = Score (a-b)
+    iMult (Score a) (Score b)    = Score (a*b)
+    iMultScalar (Score a) scalar = Score (a*(round scalar))
 
-  pointMultScalar :: Point -> Float -> Point
-  pointMultScalar (Pt a b) scalar = Pt (a*scalar) (b*scalar)
+  instance Mathable Speed where
+    iAdd (Spd a b) (Spd c d)     = Spd (a+c) (b+d)
+    iSub (Spd a b) (Spd c d)     = Spd (a-c) (b-d)
+    iMult (Spd a b) (Spd c d)    = Spd (a*c) (b*d)
+    iMultScalar (Spd a b) scalar = Spd (a*scalar) (b*scalar)

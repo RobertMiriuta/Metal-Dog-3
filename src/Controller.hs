@@ -48,7 +48,7 @@ step time game
           generatedSeed                   = snd enemySeedList
           enemySeedList                   = generateEnemy currentPlayer (seed game) remainingEnemiesAfterCollision updatedGameTime
           updatedEnemyList                = remainingEnemiesAfterCollision ++ generatedEnemies
-          updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
+          updatedScore                    = (currentScore game) `iAdd` (getReward deadEnemies)
           oldGameTime                     = gameTime game
           updatedGameTime                 = oldGameTime + time
           updatedGame                     = game {player = remainingPlayer, enemies = updatedEnemyList, projectiles = remaningProjectiles, currentScore = updatedScore, seed = generatedSeed, gameTime = updatedGameTime, particles = newListOfParticles}

@@ -155,7 +155,7 @@ generateEnemy player seed xs multiplierfloat
 
 getReward :: [Enemy] -> Score
 getReward [] = Score 0
-getReward (x:xs) = (reward x) `additionScore` (getReward xs)
+getReward (x:xs) = (reward x) `iAdd` (getReward xs)
 
 updatedPlayerWeapon :: Player -> Float -> Player
 updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
