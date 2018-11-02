@@ -1,5 +1,5 @@
--- | This module defines how to turn
---   the game state into a picture
+-- This module defines how to turn
+-- the game state into a picture
 module View where
 
 import Graphics.Gloss
@@ -39,7 +39,7 @@ viewPure game
         pausePic            = scale 0.5 0.5.color orange.text $ show Paused
         pause               = translate (-halfSizeX) (halfSizeY-60) pausePic
         gameOverPic         = scale 1.0 1.0.color orange.text $ show GameOver
-        gameover            = translate (-halfSizeX) (-50.0) $ gameOverPic 
+        gameover            = translate (-halfSizeX) (-50.0) $ gameOverPic
         pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score])
         picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score] ++ [pause])
         picsGameOver        = pictures ([gameover] ++ [score])
@@ -60,6 +60,7 @@ renderPlayer player = Pictures[translate xTrans yTrans $ (drawPlayer player), dr
   where xTrans = xP (getPos player)
         yTrans = yP (getPos player)
 
+-- used for programming purposes, won't be used in final release
 drawHitBox :: Moveable a => a -> Picture
 drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP ptBottomRight, yP ptBottomRight), ptBottomLeft, (xP ptTopLeft, yP ptTopLeft)]
   where ptTopLeft       = topLeft (getHitbox a)
@@ -74,7 +75,7 @@ renderParticles (x:xs) = (translate particlepositionX particlepositionY $ render
           particlepositionX = xP particleposition
           particlepositionY = yP particleposition
           particleAge       = Particle.age x
-          renderedParticle  = drawParticle particleAge x 
+          renderedParticle  = drawParticle particleAge x
 
 renderProjectiles :: [Projectile] -> [Picture]
 renderProjectiles [] = []
@@ -90,6 +91,7 @@ renderEnemies (x:xs) = Pictures[(translate enemyPositionX enemyPositionY $ (draw
         enemyPositionX = xP enemyPosition
         enemyPositionY = yP enemyPosition
 
+-- returns the picture for every given enemy
 drawEnemy :: EnemyKind -> Picture
 drawEnemy Firework      = enemyFireworkPicture
 drawEnemy Cat           = enemyCatPicture

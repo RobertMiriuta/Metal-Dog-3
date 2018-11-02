@@ -1,3 +1,5 @@
+-- Enemy contains the type class definitions for the enemy data type and
+-- the associated enemy types
 module Enemy where
 
 import GenericTypes

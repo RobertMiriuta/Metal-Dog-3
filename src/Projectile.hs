@@ -1,3 +1,5 @@
+-- projectile contains the type class definitions for projectiles, mainly the
+-- Moveable class
 module Projectile where
 
   import GenericTypes

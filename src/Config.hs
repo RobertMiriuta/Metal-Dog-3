@@ -1,3 +1,7 @@
+-- The Config module contains all the important numbers about our game
+-- and enables an easy way to change all of the games settings
+-- contains default enemy types and values, player values, projectiles
+-- weapons, window size and inital variables
 module Config where
 
 import Graphics.Gloss hiding (Point)
@@ -30,11 +34,13 @@ enemyColor = green
 amountEnemyTypes :: Int
 amountEnemyTypes = 5
 
+-- starting difficulty
 difficulty :: Int
 difficulty = 10
 
 multiplierIncrement :: Float
 multiplierIncrement = 1.0
+
 --Firework
 enemyFireworkPicture :: Picture
 enemyFireworkPicture = color enemyColor $ Polygon [(0,-10),(10,0),(10,-5),(25,-5),(25,-15),(10,-15),(10,-20)]
@@ -149,10 +155,34 @@ enemyVacuumCleaner pt = Enemy VacuumCleaner enemyVacuumCleanerHealth pt newHitbo
     where newHitbox = HBox newTL newBR
           newTL     = iAdd pt (topLeft enemyVacuumCleanerHitbox)
           newBR     = iAdd pt (bottomRight enemyVacuumCleanerHitbox)
---Player appearance and other values and ini
+
+--Player appearance and other values
 
 playerPicture :: Picture
 playerPicture = Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 15 (-10) $ scale 1 2 $ Circle 5]
+
+playerSpawnCoordinates :: Point
+playerSpawnCoordinates = (Pt spawnX spawnY)
+  where spawnX = (-(fst windowSizeFloat) / 2) + 50 --50 pixels off of the left border
+        spawnY = 0.0 --middle of the screen
+
+standardPlayerSpeed :: Speed
+standardPlayerSpeed = Spd 6.0 6.0
+
+standardPlayerHitbox :: Hitbox
+standardPlayerHitbox = HBox (iAdd spawn (Pt 0.0 10.0)) (iAdd spawn (Pt 30.0 (-10.0)))
+  where spawnX = (-(fst windowSizeFloat) / 2) + 50
+        spawnY = 0.0
+        spawn  = Pt spawnX spawnY
+
+standardPlayerHealth :: Int
+standardPlayerHealth = 2
+
+standardPlayerWeaponRechargeRate :: Float
+standardPlayerWeaponRechargeRate = 0.25
+
+standardPlayerWeapon :: Weapon
+standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRate
 
 --Projectile appearance and other values
 
@@ -182,29 +212,6 @@ standardProjectileHitbox :: Hitbox
 standardProjectileHitbox = HBox (Pt 0 0) (Pt size (-size))
   where size = standardProjectileSizeFloat
 
---initial values
-playerSpawnCoordinates :: Point
-playerSpawnCoordinates = (Pt spawnX spawnY)
-  where spawnX = (-(fst windowSizeFloat) / 2) + 50 --50 pixels off of the left border
-        spawnY = 0.0 --middle of the screen
-
-standardPlayerSpeed :: Speed
-standardPlayerSpeed = Spd 6.0 6.0
-
-standardPlayerHitbox :: Hitbox
-standardPlayerHitbox = HBox (iAdd spawn (Pt 0.0 10.0)) (iAdd spawn (Pt 30.0 (-10.0)))
-  where spawnX = (-(fst windowSizeFloat) / 2) + 50
-        spawnY = 0.0
-        spawn  = Pt spawnX spawnY
-
-standardPlayerHealth :: Int
-standardPlayerHealth = 2
-
-standardPlayerWeaponRechargeRate :: Float
-standardPlayerWeaponRechargeRate = 0.25
-
-standardPlayerWeapon :: Weapon
-standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRate
 -- particles
 
 standardParticle :: Point -> Particle
@@ -216,8 +223,8 @@ particlePicture age = translate halfsize (-halfsize) $ rectangleSolid size size
         sumthing = age * standardProjectileSizeFloat
         size = standardProjectileSizeFloat - sumthing
 
--- initial values
-startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
+-- initial game values
+startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed Config.standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
 startingProjectiles = []
 startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0) enemyFireworkSpeed]
 startingKeys = []

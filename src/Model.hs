@@ -1,5 +1,5 @@
--- | This module contains the data types
---   which represent the state of the game
+-- This module contains the data types
+-- which represent the state of the game
 module Model where
 
 import GenericTypes
@@ -13,6 +13,7 @@ import Config
 import System.Random
 import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, KeyRight, KeySpace))
 
+-- initial game state with given rng
 initialState :: StdGen -> MetalDogGame
 initialState gen = initialGame gen
 
@@ -24,6 +25,7 @@ movePlayer player (key:listOfKeys)
     where movedPlayer   = repositionPlayer player key
           isIllegalMove = isOutOfBounds movedPlayer windowSizeFloat
 
+-- moves player 1 frame forward in given direction
 repositionPlayer :: Player -> SpecialKey -> Player
 repositionPlayer player x
   |x == KeyUp     = movePlayerWithVector player (0.0, 1.0)
@@ -32,6 +34,7 @@ repositionPlayer player x
   |x == KeyRight  = movePlayerWithVector player (1.0, 0.0)
   |otherwise = player
 
+-- moves player with a given movement vector
 movePlayerWithVector :: Player -> (Float, Float) -> Player
 movePlayerWithVector player (x,y) = move player moveVector
   where moveVector = Vctr x y
@@ -89,9 +92,11 @@ didEnemyGetHit (projectile:nextProjectile:lOP) lOE
     where enemiesStillAlive = didProjectileHitEnemies projectile lOE
           areEnemiesKilled = (length enemiesStillAlive /= length lOE)
 
+-- helper function for removal loop
 insertProjectileIntoTuple :: Projectile -> ([Projectile], [Enemy]) -> ([Projectile], [Enemy])
 insertProjectileIntoTuple p (projectiles, enemies) = (p:projectiles, enemies)
 
+-- helper function for removal loop
 insertEnemyIntoTuple :: Enemy -> ([Enemy], Player) -> ([Enemy], Player)
 insertEnemyIntoTuple e (enemies, player) = (e:enemies, player)
 
@@ -114,6 +119,8 @@ fireBullet player (x:xs)
           firingPoint               = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
           playerWeapon              = activeWeapon player
           createProjectileAt point  = (createProjectile playerWeapon) point
+
+-- random enemy generation
 
 createRandomEnemyKind :: StdGen -> (EnemyKind, StdGen)
 createRandomEnemyKind seed

@@ -1,8 +1,9 @@
+-- Player contains the typeclass definitions of the player object
 module Player where
 
   import GenericTypes
   import Weapon
-  
+
   data Player = Plyr {position::Point,
                       movementSpeed::Speed,
                       hitbox::Hitbox,
@@ -16,6 +17,10 @@ module Player where
     takeDamage p dmg | newHealth <= 0 = Nothing
                      | otherwise = Just (p {health = newHealth})
                         where newHealth = (getHealth p) - dmg
+
+  -- default player hitbox
+  standardPlayerHitbox :: Hitbox
+  standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
 
   --every moveable object has a size and hitbox and can collide with other moveable objects
   instance Moveable Player where

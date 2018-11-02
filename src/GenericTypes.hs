@@ -1,3 +1,5 @@
+-- GenericTypes contains all the base data types and type classes which are
+-- being used to make calculations in our game
 module GenericTypes where
 
   data Point = Pt {xP::Float, yP::Float}
@@ -16,26 +18,28 @@ module GenericTypes where
   data Score = Score Int
       deriving (Show, Eq)
 
-  standardPlayerHitbox :: Hitbox
-  standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
-
+  -- Points, Vectors, Scores and Speeds are Mathable
+  -- and have basic mathematical operations
   class Mathable a where
     iAdd :: a -> a -> a
     iMult :: a -> a -> a
     iSub :: a -> a -> a
     iMultScalar :: a -> Float -> a
 
+  -- The player and the enemies are damageable, though this class is currently
+  -- not being used
   class Damageable a where
     getHealth :: a -> Int
     takeDamage :: a -> Int -> Maybe a
 
-  --All moveable objects have a size associated with them
-  --this is an extra requirement for the bounds calculations
+  -- All moveable objects have a size associated with them
+  -- this is an extra requirement for the bounds calculations.
+  -- Moveable Objects are projectiles, enemies and the player
   class Moveable a where
     getPos :: a -> Point
     getSpeed :: a -> Speed
-    getSize :: a -> Point      --returns the bottom right corner pixel of the hitbox
-    move :: a -> Vector -> a   --moves model and hitbox
+    getSize :: a -> Point      -- returns the bottom right corner pixel of the hitbox
+    move :: a -> Vector -> a   -- moves model and hitbox
     isOutOfBounds :: a -> (Float, Float) -> Bool
     getHitbox :: a -> Hitbox
     isHitBy :: Moveable b => a -> b -> Bool
@@ -61,14 +65,17 @@ module GenericTypes where
             normalizer = speedNorm / bigNorm
             newSpeedVec = iMultScalar bigVector normalizer
 
+  -- calculates the euclidian vector magnitude
   getSpeedVectorMagnitude :: Speed -> Float
   getSpeedVectorMagnitude a = sqrt (xSpd * xSpd + ySpd * ySpd)
     where xSpd = speedPerTickX  a
           ySpd = speedPerTickY  a
 
+  -- multiplies a given directional vector with the speed of an object
   multVectorSpeed :: Vector -> Speed -> Vector
   multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
 
+  -- basic mathematical operations
   instance Mathable Point where
     iAdd (Pt a b) (Pt c d)      = Pt (a+c) (b+d)
     iSub (Pt a b) (Pt c d)      = Pt (a-c) (b-d)
