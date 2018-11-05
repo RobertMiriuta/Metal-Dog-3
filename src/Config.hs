@@ -90,7 +90,8 @@ enemyCat pt = Enemy Cat enemyCatHealth pt newHitbox enemyCatSpeed enemyCatReward
 --Postman
 enemyPostmanPicture :: Picture
 enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 (-5) $ Circle 5),
-                                                   Polygon[(0,-10),(0,-25),(3,-25),(3,-15),(5,-15),(5,-35),(8,-35),(8,-25),(12,-25),(12,-35),(15,-35),(15,-15),(17,-15),(17,-25),(20,-25),(20,-10)]]
+                                                   Polygon[(0,-10),(0,-25),(3,-25),(3,-15),(5,-15),(5,-35),(8,-35),(8,-25),(12,-25),
+                                                    (12,-35),(15,-35),(15,-15),(17,-15),(17,-25),(20,-25),(20,-10)]]
 
 enemyPostmanHealth :: Int
 enemyPostmanHealth = 1
