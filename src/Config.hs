@@ -217,7 +217,9 @@ particlePicture age = translate halfsize (-halfsize) $ rectangleSolid size size
         size = standardProjectileSizeFloat - sumthing
 
 -- initial values
-startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
+startingPlayer :: String -> Player
+startingPlayer name = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon name
+
 startingProjectiles = []
 startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
 startingKeys = []
@@ -226,5 +228,5 @@ startingState = Playing
 startingGameTime = 0.0
 startingParticles = []
 
-initialGame :: StdGen -> MetalDogGame
-initialGame seed = Game startingPlayer startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime startingParticles
+initialGame :: StdGen -> String -> [Highscore] -> MetalDogGame
+initialGame seed playername highscore = Game (startingPlayer playername) startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime startingParticles highscore

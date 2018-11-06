@@ -8,7 +8,8 @@ module Player where
                       hitbox::Hitbox,
                       health::Int,
                       status::String,
-                      activeWeapon::Weapon}
+                      activeWeapon::Weapon,
+                      name::String}
                       deriving Eq
 
   instance Damageable Player where

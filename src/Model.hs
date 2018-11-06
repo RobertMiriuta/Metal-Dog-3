@@ -6,15 +6,29 @@ import GenericTypes
 import Player
 import Enemy
 import Weapon
+import Parser
 import Particle
 import Projectile
 import GameTypes
 import Config
 import System.Random
+import Data.List
 import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, KeyRight, KeySpace))
 
-initialState :: StdGen -> MetalDogGame
-initialState gen = initialGame gen
+initialState :: StdGen -> String -> [Highscore] -> MetalDogGame
+initialState gen playername highscore = initialGame gen playername highscore
+
+gameOverLogic :: MetalDogGame -> IO MetalDogGame
+gameOverLogic game = do updateFile <- writeJsonFile newhighscore
+                        return game {highscore = newhighscore}
+                          where currentplayer        = player game
+                                playerscore          = getIntFromScore (currentScore game)
+                                playername           = Player.name currentplayer
+                                currenthighscorelist = highscore game
+                                playerhighscoreentry = HScore playername playerscore
+                                checkedhighscore     = filter (/= playerhighscoreentry) currenthighscorelist
+                                newhighscore         = reverse (sort (playerhighscoreentry : checkedhighscore))
+
 
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player
@@ -165,5 +179,3 @@ createParticles [] = []
 createParticles (x:xs) = newParticle : createParticles xs
     where projectilePosition  = getPos x
           newParticle         = standardParticle projectilePosition
-  -- | createNewParticle = newParticle : createParticles xs
-  -- | otherwise = createParticles xs

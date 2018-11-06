@@ -1,58 +1,83 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
 module GenericTypes where
 
-  data Point = Pt {xP::Float, yP::Float}
-      deriving (Show,Eq)
+import GHC.Generics
+import Data.Aeson
 
-  data Vector = Vctr {uV::Float, vV::Float}
-      deriving Show
+data Point = Pt {xP::Float, yP::Float}
+    deriving (Show,Eq)
 
-  data Speed = Spd {speedPerTickX::Float, speedPerTickY::Float}
-      deriving (Show,Eq)
+data Vector = Vctr {uV::Float, vV::Float}
+    deriving Show
 
-  --All hitboxes are rectangles
-  data Hitbox = HBox {topLeft::Point, bottomRight::Point}
-      deriving (Show, Eq)
+data Speed = Spd {speedPerTickX::Float, speedPerTickY::Float}
+    deriving (Show,Eq)
 
-  data Score = Score Int
-      deriving (Show, Eq)
+--All hitboxes are rectangles
+data Hitbox = HBox {topLeft::Point, bottomRight::Point}
+    deriving (Show, Eq)
 
-  additionScore :: Score -> Score -> Score 
-  additionScore (Score a) (Score b) = Score (a+b)
+data Highscore = HScore {name :: String, score :: Int} 
+    deriving (Eq, Show)
 
-  standardPlayerHitbox :: Hitbox
-  standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
+instance Ord Highscore where
+  (HScore _ score1) `compare` (HScore _ score2) = score1 `compare` score2
 
-  class Damageable a where
-    getHealth :: a -> Int
-    takeDamage :: a -> Int -> Maybe a
 
-  --All moveable objects have a size associated with them
-  --this is an extra requirement for the bounds calculations
-  class Moveable a where
-    getPos :: a -> Point
-    getSpeed :: a -> Speed
-    getSize :: a -> Point      --returns the bottom right corner pixel of the hitbox
-    move :: a -> Vector -> a   --moves model and hitbox
-    isOutOfBounds :: a -> (Float, Float) -> Bool
-    getHitbox :: a -> Hitbox
-    isHitBy :: Moveable b => a -> b -> Bool
-    isHitBy first second 
-                | topXfirst > bottomXsecond = False
-                | topYfirst < bottomYsecond = False
-                | bottomXfirst < topXsecond = False
-                | bottomYfirst > topYsecond = False
-                | otherwise = True
-                  where topXfirst = xP (topLeft (getHitbox first))
-                        topXsecond = xP (topLeft (getHitbox second))
-                        topYfirst = yP (topLeft (getHitbox first))
-                        topYsecond = yP (topLeft (getHitbox second))
-                        bottomXfirst = xP (bottomRight (getHitbox first))
-                        bottomXsecond = xP (bottomRight (getHitbox second))
-                        bottomYfirst = yP (bottomRight (getHitbox first))
-                        bottomYsecond = yP (bottomRight (getHitbox second))
+instance FromJSON Highscore where
+ parseJSON (Object v) =
+    HScore <$> v .: "name" <*> v .: "score"
 
-  multVectorSpeed :: Vector -> Speed -> Vector
-  multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
+instance ToJSON Highscore where
+ toJSON (HScore name score) =
+    object [ "name"  .= name
+           , "score"   .= score
+           ]
 
-  pointAdd :: Point -> Point -> Point
-  pointAdd (Pt a b) (Pt c d) = Pt (a+c) (b+d)
+
+newtype Score = Score Int
+    deriving (Show, Eq , Generic)
+instance ToJSON Score
+instance FromJSON Score
+
+additionScore :: Score -> Score -> Score 
+additionScore (Score a) (Score b) = Score (a+b)
+
+standardPlayerHitbox :: Hitbox
+standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
+
+class Damageable a where
+  getHealth :: a -> Int
+  takeDamage :: a -> Int -> Maybe a
+
+--All moveable objects have a size associated with them
+--this is an extra requirement for the bounds calculations
+class Moveable a where
+  getPos :: a -> Point
+  getSpeed :: a -> Speed
+  getSize :: a -> Point      --returns the bottom right corner pixel of the hitbox
+  move :: a -> Vector -> a   --moves model and hitbox
+  isOutOfBounds :: a -> (Float, Float) -> Bool
+  getHitbox :: a -> Hitbox
+  isHitBy :: Moveable b => a -> b -> Bool
+  isHitBy first second 
+              | topXfirst > bottomXsecond = False
+              | topYfirst < bottomYsecond = False
+              | bottomXfirst < topXsecond = False
+              | bottomYfirst > topYsecond = False
+              | otherwise = True
+                where topXfirst = xP (topLeft (getHitbox first))
+                      topXsecond = xP (topLeft (getHitbox second))
+                      topYfirst = yP (topLeft (getHitbox first))
+                      topYsecond = yP (topLeft (getHitbox second))
+                      bottomXfirst = xP (bottomRight (getHitbox first))
+                      bottomXsecond = xP (bottomRight (getHitbox second))
+                      bottomYfirst = yP (bottomRight (getHitbox first))
+                      bottomYsecond = yP (bottomRight (getHitbox second))
+
+multVectorSpeed :: Vector -> Speed -> Vector
+multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
+
+pointAdd :: Point -> Point -> Point
+pointAdd (Pt a b) (Pt c d) = Pt (a+c) (b+d)
