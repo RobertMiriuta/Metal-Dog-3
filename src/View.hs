@@ -11,6 +11,7 @@ import Player
 import Projectile
 import Enemy
 import Particle
+import Data.List
 
 view :: MetalDogGame -> IO Picture
 view = return . viewPure
@@ -39,10 +40,11 @@ viewPure game
         pausePic            = scale 0.5 0.5.color orange.text $ show Paused
         pause               = translate (-halfSizeX) (halfSizeY-60) pausePic
         gameOverPic         = scale 1.0 1.0.color orange.text $ show GameOver
-        gameover            = translate (-halfSizeX) (-50.0) $ gameOverPic
+        gameover            = translate (-halfSizeX) (-50.0) $ gameOverPic 
+        scoreboard          = drawScoreboard (highscore game)
         pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score])
         picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score] ++ [pause])
-        picsGameOver        = pictures ([gameover] ++ [score])
+        picsGameOver        = pictures ([gameover] ++ [score] ++ [scoreboard])
 
 renderActiveArea :: Picture
 renderActiveArea    = Pictures [boundary,axis]
@@ -67,6 +69,22 @@ drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP 
         ptTopRight      = (xP ptBottomRight, yP ptTopLeft)
         ptBottomRight   = bottomRight (getHitbox a)
         ptBottomLeft    = (xP ptTopLeft, yP ptBottomRight)
+
+
+drawScoreboard :: [Highscore] -> Picture
+drawScoreboard []           = scale 1.0 1.0.color orange.text $ show "nothing"
+drawScoreboard [x]          = singleElement x
+drawScoreboard [x,y]        = twoElement x y
+drawScoreboard (x:y:z:xs)   = threeElement x y z
+ 
+threeElement :: Highscore -> Highscore -> Highscore -> Picture 
+threeElement a b c = pictures [translate (-50) (50.0) $ scale 0.20 0.20 . color orange . text $ show ("3." ++ GenericTypes.name c ++ " - " ++ show (score c)), twoElement a b ]
+
+twoElement :: Highscore -> Highscore -> Picture
+twoElement a b = pictures [translate (-50) (75.0) $ scale 0.20 0.20 . color orange . text $ show ("2." ++ GenericTypes.name b ++ " - " ++ show (score b)), singleElement a]
+
+singleElement :: Highscore -> Picture
+singleElement a = translate (-50) (100.0) $ scale 0.20 0.20 . color orange . text $ show ("1." ++ GenericTypes.name a ++ " - " ++ show (score a))
 
 renderParticles :: [Particle] -> [Picture]
 renderParticles [] = []

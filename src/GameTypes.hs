@@ -18,8 +18,8 @@ data MetalDogGame = Game {player::Player,
                           currentScore::Score,
                           gameState :: Gamestate,
                           gameTime :: Float,
-                          particles::[Particle]
-                          --highscore::Score
+                          particles::[Particle],
+                          highscore::[Highscore]
                          }
 
 data Gamestate = Playing

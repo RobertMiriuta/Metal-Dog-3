@@ -9,7 +9,8 @@ module Player where
                       hitbox::Hitbox,
                       health::Int,
                       status::String,
-                      activeWeapon::Weapon}
+                      activeWeapon::Weapon,
+                      name::String}
                       deriving Eq
 
   instance Damageable Player where
@@ -17,10 +18,6 @@ module Player where
     takeDamage p dmg | newHealth <= 0 = Nothing
                      | otherwise = Just (p {health = newHealth})
                         where newHealth = (getHealth p) - dmg
-
-  -- default player hitbox
-  standardPlayerHitbox :: Hitbox
-  standardPlayerHitbox = HBox (Pt 0.0 10.0) (Pt 30.0 (-10.0))
 
   --every moveable object has a size and hitbox and can collide with other moveable objects
   instance Moveable Player where

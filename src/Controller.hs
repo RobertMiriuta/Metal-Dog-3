@@ -15,7 +15,7 @@ import Player
 -- | Handle one iteration of the game
 step :: Float -> MetalDogGame -> IO MetalDogGame
 step time game
-  |isDead                = return gameOverGame
+  |isDead                = gameOverLogic gameOverGame
   |isPlaying             = return updatedGame
   |otherwise             = return game
     where isPlaying                       = (gameState game) == Playing
@@ -89,5 +89,5 @@ inputKey (EventKey (Char 'p') Down _ _) game
   |isPlaying = game {gameState = Paused}
   |otherwise = game {gameState = Playing}
     where isPlaying = (gameState game) == Playing
-inputKey (EventKey (Char 'r') Down _ _) game = initialState (seed game) --Resets the game
+inputKey (EventKey (Char 'r') Down _ _) game = initialState (seed game) (Player.name (player game)) (highscore game) --Resets the game
 inputKey _ game = game -- Otherwise keep the same
