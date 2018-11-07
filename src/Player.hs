@@ -1,8 +1,9 @@
+-- Player contains the typeclass definitions of the player object
 module Player where
 
   import GenericTypes
   import Weapon
-  
+
   data Player = Plyr {position::Point,
                       movementSpeed::Speed,
                       hitbox::Hitbox,

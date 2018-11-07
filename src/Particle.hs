@@ -1,3 +1,5 @@
+--The Particle class contains information about the animated particles behind
+--the bullets
 module Particle where
 
 import GenericTypes

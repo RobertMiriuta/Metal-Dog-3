@@ -1,5 +1,5 @@
--- | This module defines how the state changes
---   in response to time and user input
+-- This module defines how the state changes
+-- in response to time and user input
 module Controller where
 
 import Model
@@ -46,18 +46,19 @@ step time game
           deadEnemies                     = movedEnemies \\ remainingEnemiesAfterKills
           generatedEnemies                = fst enemySeedList
           generatedSeed                   = snd enemySeedList
-          enemySeedList                   = generateEnemy (seed game) remainingEnemiesAfterCollision updatedGameTime
+          enemySeedList                   = generateEnemy currentPlayer (seed game) remainingEnemiesAfterCollision updatedGameTime
           updatedEnemyList                = remainingEnemiesAfterCollision ++ generatedEnemies
-          updatedScore                    = (currentScore game) `additionScore` (getReward deadEnemies)
+          updatedScore                    = (currentScore game) `iAdd` (getReward deadEnemies)
           oldGameTime                     = gameTime game
           updatedGameTime                 = oldGameTime + time
           updatedGame                     = game {player = remainingPlayer, enemies = updatedEnemyList, projectiles = remaningProjectiles, currentScore = updatedScore, seed = generatedSeed, gameTime = updatedGameTime, particles = newListOfParticles}
           gameOverGame                    = game {gameState = GameOver}
 
--- | Handle user input
+-- Handle user input
 input :: Event -> MetalDogGame -> IO MetalDogGame
 input e gstate = return (inputKey e gstate)
 
+-- handles key inputs for movement, shooting, pausing and restarting
 inputKey :: Event -> MetalDogGame -> MetalDogGame
 inputKey (EventKey (SpecialKey key) Down _ _) game = case key of
         -- Handles the events for the arrow keys

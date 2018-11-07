@@ -1,3 +1,5 @@
+-- GameTypes contains the game state data types used for defining ever frame
+-- of the game and the current state it is in
 module GameTypes where
 
 import Player

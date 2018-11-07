@@ -1,3 +1,7 @@
+-- The Config module contains all the important numbers about our game
+-- and enables an easy way to change all of the games settings
+-- contains default enemy types and values, player values, projectiles
+-- weapons, window size and inital variables
 module Config where
 
 import Graphics.Gloss hiding (Point)
@@ -30,11 +34,13 @@ enemyColor = green
 amountEnemyTypes :: Int
 amountEnemyTypes = 5
 
+-- starting difficulty
 difficulty :: Int
 difficulty = 10
 
 multiplierIncrement :: Float
 multiplierIncrement = 1.0
+
 --Firework
 enemyFireworkPicture :: Picture
 enemyFireworkPicture = color enemyColor $ Polygon [(0,-10),(10,0),(10,-5),(25,-5),(25,-15),(10,-15),(10,-20)]
@@ -46,16 +52,16 @@ enemyFireworkHealth :: Int
 enemyFireworkHealth = 1
 
 enemyFireworkSpeed :: Speed
-enemyFireworkSpeed = (Spd (-100.0) 0.0)
+enemyFireworkSpeed = (Spd (-150.0) 0.0)
 
 enemyFireworkReward :: Score
 enemyFireworkReward = Score 50
 
-enemyFirework :: Point -> Enemy
-enemyFirework pt = Enemy Firework enemyFireworkHealth pt newHitbox enemyFireworkSpeed enemyFireworkReward
+enemyFirework :: Point -> Speed -> Enemy
+enemyFirework pt spd = Enemy Firework enemyFireworkHealth pt newHitbox spd enemyFireworkReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyFireworkHitbox)
-          newBR     = pointAdd pt (bottomRight enemyFireworkHitbox)
+          newTL     = iAdd pt (topLeft enemyFireworkHitbox)
+          newBR     = iAdd pt (bottomRight enemyFireworkHitbox)
 
 --Cat
 enemyCatPicture :: Picture
@@ -78,13 +84,14 @@ enemyCatReward = Score 20
 enemyCat :: Point -> Enemy
 enemyCat pt = Enemy Cat enemyCatHealth pt newHitbox enemyCatSpeed enemyCatReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyCatHitbox)
-          newBR     = pointAdd pt (bottomRight enemyCatHitbox)
+          newTL     = iAdd pt (topLeft enemyCatHitbox)
+          newBR     = iAdd pt (bottomRight enemyCatHitbox)
 
 --Postman
 enemyPostmanPicture :: Picture
 enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 (-5) $ Circle 5),
-                                                   Polygon[(0,-10),(0,-25),(3,-25),(3,-15),(5,-15),(5,-35),(8,-35),(8,-25),(12,-25),(12,-35),(15,-35),(15,-15),(17,-15),(17,-25),(20,-25),(20,-10)]]
+                                                   Polygon[(0,-10),(0,-25),(3,-25),(3,-15),(5,-15),(5,-35),(8,-35),(8,-25),(12,-25),
+                                                    (12,-35),(15,-35),(15,-15),(17,-15),(17,-25),(20,-25),(20,-10)]]
 
 enemyPostmanHealth :: Int
 enemyPostmanHealth = 1
@@ -101,8 +108,8 @@ enemyPostmanReward = Score 40
 enemyPostman :: Point -> Enemy
 enemyPostman pt = Enemy Postman enemyPostmanHealth pt newHitbox enemyPostmanSpeed enemyPostmanReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyPostmanHitbox)
-          newBR     = pointAdd pt (bottomRight enemyPostmanHitbox)
+          newTL     = iAdd pt (topLeft enemyPostmanHitbox)
+          newBR     = iAdd pt (bottomRight enemyPostmanHitbox)
 
 --Car
 enemyCarPicture :: Picture
@@ -125,8 +132,8 @@ enemyCarReward = Score 40
 enemyCar :: Point -> Enemy
 enemyCar pt = Enemy Car enemyCarHealth pt newHitbox enemyCarSpeed enemyCarReward
   where newHitbox = HBox newTL newBR
-        newTL     = pointAdd pt (topLeft enemyCarHitbox)
-        newBR     = pointAdd pt (bottomRight enemyCarHitbox)
+        newTL     = iAdd pt (topLeft enemyCarHitbox)
+        newBR     = iAdd pt (bottomRight enemyCarHitbox)
 
 --Vacuum Cleaner
 enemyVacuumCleanerPicture :: Picture
@@ -147,12 +154,36 @@ enemyVacuumCleanerReward = Score 100
 enemyVacuumCleaner :: Point -> Enemy
 enemyVacuumCleaner pt = Enemy VacuumCleaner enemyVacuumCleanerHealth pt newHitbox enemyVacuumCleanerSpeed enemyVacuumCleanerReward
     where newHitbox = HBox newTL newBR
-          newTL     = pointAdd pt (topLeft enemyVacuumCleanerHitbox)
-          newBR     = pointAdd pt (bottomRight enemyVacuumCleanerHitbox)
---Player appearance and other values and ini
+          newTL     = iAdd pt (topLeft enemyVacuumCleanerHitbox)
+          newBR     = iAdd pt (bottomRight enemyVacuumCleanerHitbox)
+
+--Player appearance and other values
 
 playerPicture :: Picture
 playerPicture = Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 15 (-10) $ scale 1 2 $ Circle 5]
+
+playerSpawnCoordinates :: Point
+playerSpawnCoordinates = (Pt spawnX spawnY)
+  where spawnX = (-(fst windowSizeFloat) / 2) + 50 --50 pixels off of the left border
+        spawnY = 0.0 --middle of the screen
+
+standardPlayerSpeed :: Speed
+standardPlayerSpeed = Spd 6.0 6.0
+
+standardPlayerHitbox :: Hitbox
+standardPlayerHitbox = HBox (iAdd spawn (Pt 0.0 10.0)) (iAdd spawn (Pt 30.0 (-10.0)))
+  where spawnX = (-(fst windowSizeFloat) / 2) + 50
+        spawnY = 0.0
+        spawn  = Pt spawnX spawnY
+
+standardPlayerHealth :: Int
+standardPlayerHealth = 2
+
+standardPlayerWeaponRechargeRate :: Float
+standardPlayerWeaponRechargeRate = 0.25
+
+standardPlayerWeapon :: Weapon
+standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRate
 
 --Projectile appearance and other values
 
@@ -166,8 +197,8 @@ projectilePicture = color projectileColor $ translate halfsize (-halfsize) $ rec
 standardProjectile :: Point -> Projectile
 standardProjectile point = Prjtl standardProjectileSpeed point standardProjectileSize actualHitbox 0.0
   where actualHitbox = HBox newTopLeft newBottomRight
-        newTopLeft = pointAdd point (topLeft standardProjectileHitbox)
-        newBottomRight = pointAdd point (bottomRight standardProjectileHitbox)
+        newTopLeft = iAdd point (topLeft standardProjectileHitbox)
+        newBottomRight = iAdd point (bottomRight standardProjectileHitbox)
 
 standardProjectileSize :: Int
 standardProjectileSize = 10
@@ -182,29 +213,6 @@ standardProjectileHitbox :: Hitbox
 standardProjectileHitbox = HBox (Pt 0 0) (Pt size (-size))
   where size = standardProjectileSizeFloat
 
---initial values
-playerSpawnCoordinates :: Point
-playerSpawnCoordinates = (Pt spawnX spawnY)
-  where spawnX = (-(fst windowSizeFloat) / 2) + 50 --50 pixels off of the left border
-        spawnY = 0.0 --middle of the screen
-
-standardPlayerSpeed :: Speed
-standardPlayerSpeed = Spd 6.0 6.0
-
-standardPlayerHitbox :: Hitbox
-standardPlayerHitbox = HBox (pointAdd spawn (Pt 0.0 10.0)) (pointAdd spawn (Pt 30.0 (-10.0)))
-  where spawnX = (-(fst windowSizeFloat) / 2) + 50
-        spawnY = 0.0
-        spawn  = Pt spawnX spawnY
-
-standardPlayerHealth :: Int
-standardPlayerHealth = 2
-
-standardPlayerWeaponRechargeRate :: Float
-standardPlayerWeaponRechargeRate = 0.25
-
-standardPlayerWeapon :: Weapon
-standardPlayerWeapon = Wpn standardProjectile 1.0 standardPlayerWeaponRechargeRate
 -- particles
 
 standardParticle :: Point -> Particle
@@ -216,12 +224,12 @@ particlePicture age = translate halfsize (-halfsize) $ rectangleSolid size size
         sumthing = age * standardProjectileSizeFloat
         size = standardProjectileSizeFloat - sumthing
 
--- initial values
+--initial game values
 startingPlayer :: String -> Player
 startingPlayer name = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon name
 
 startingProjectiles = []
-startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0)]
+startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0) enemyFireworkSpeed]
 startingKeys = []
 startingScore = Score 0
 startingState = Playing

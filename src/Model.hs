@@ -1,5 +1,5 @@
--- | This module contains the data types
---   which represent the state of the game
+-- This module contains the data types
+-- which represent the state of the game
 module Model where
 
 import GenericTypes
@@ -29,7 +29,6 @@ gameOverLogic game = do updateFile <- writeJsonFile newhighscore
                                 checkedhighscore     = filter (/= playerhighscoreentry) currenthighscorelist
                                 newhighscore         = reverse (sort (playerhighscoreentry : checkedhighscore))
 
-
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player
 movePlayer player (key:listOfKeys)
@@ -38,6 +37,7 @@ movePlayer player (key:listOfKeys)
     where movedPlayer   = repositionPlayer player key
           isIllegalMove = isOutOfBounds movedPlayer windowSizeFloat
 
+-- moves player 1 frame forward in given direction
 repositionPlayer :: Player -> SpecialKey -> Player
 repositionPlayer player x
   |x == KeyUp     = movePlayerWithVector player (0.0, 1.0)
@@ -46,6 +46,7 @@ repositionPlayer player x
   |x == KeyRight  = movePlayerWithVector player (1.0, 0.0)
   |otherwise = player
 
+-- moves player with a given movement vector
 movePlayerWithVector :: Player -> (Float, Float) -> Player
 movePlayerWithVector player (x,y) = move player moveVector
   where moveVector = Vctr x y
@@ -53,7 +54,7 @@ movePlayerWithVector player (x,y) = move player moveVector
 moveProjectiles :: Float -> [Projectile] -> [Projectile]
 moveProjectiles _ [] = []
 moveProjectiles time (x:xs)
-  |canBeRemoved       = moveProjectiles time xs 
+  |canBeRemoved       = moveProjectiles time xs
   |otherwise          = updatedProjectile : moveProjectiles time xs
   where projectilePosition = getPos x
         projectilePositionY = yP projectilePosition
@@ -103,9 +104,11 @@ didEnemyGetHit (projectile:nextProjectile:lOP) lOE
     where enemiesStillAlive = didProjectileHitEnemies projectile lOE
           areEnemiesKilled = (length enemiesStillAlive /= length lOE)
 
+-- helper function for removal loop
 insertProjectileIntoTuple :: Projectile -> ([Projectile], [Enemy]) -> ([Projectile], [Enemy])
 insertProjectileIntoTuple p (projectiles, enemies) = (p:projectiles, enemies)
 
+-- helper function for removal loop
 insertEnemyIntoTuple :: Enemy -> ([Enemy], Player) -> ([Enemy], Player)
 insertEnemyIntoTuple e (enemies, player) = (e:enemies, player)
 
@@ -127,7 +130,9 @@ fireBullet player (x:xs)
           updatedPlayer             = player {activeWeapon = usedWeapon}
           firingPoint               = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
           playerWeapon              = activeWeapon player
-          createProjectileAt point  = (createProjectile playerWeapon) point 
+          createProjectileAt point  = (createProjectile playerWeapon) point
+
+-- random enemy generation
 
 createRandomEnemyKind :: StdGen -> (EnemyKind, StdGen)
 createRandomEnemyKind seed
@@ -141,9 +146,10 @@ createRandomEnemyKind seed
             numF = abs (fst ranGen1)
             num = numF - (numF `mod` 1)
 
-createRandomEnemy :: (EnemyKind, StdGen) -> (Enemy, StdGen)
-createRandomEnemy (kind, seed)
-    | kind == Firework     = (enemyFirework ranPos, newSeed)
+--Player is passed to get position information for heat seaking missiles
+createRandomEnemy :: Player -> (EnemyKind, StdGen) -> (Enemy, StdGen)
+createRandomEnemy player (kind, seed)
+    | kind == Firework     = (createdFirework, newSeed)
     | kind == Cat          = (enemyCat ranPos, newSeed)
     | kind == Postman      = (enemyPostman ranPos, newSeed)
     | kind == Car          = (enemyCar ranPos, newSeed)
@@ -153,19 +159,22 @@ createRandomEnemy (kind, seed)
             ranPosY = fst ranGen
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
+            newFireworkSpeed = calcSpeedToPoint (enemyFirework ranPos enemyFireworkSpeed) (getPos player)
+            createdFirework = enemyFirework ranPos newFireworkSpeed
 
-generateEnemy :: StdGen -> [Enemy] -> Float -> ([Enemy], StdGen)
-generateEnemy seed xs multiplierfloat
+--Player is passed to get position information for heat seaking missiles
+generateEnemy :: Player -> StdGen -> [Enemy] -> Float -> ([Enemy], StdGen)
+generateEnemy player seed xs multiplierfloat
     | length xs < difficultyMultiplier = returnTuple
     | otherwise = ([], seed)
-      where newEnem = createRandomEnemy (createRandomEnemyKind seed)
+      where newEnem = createRandomEnemy player (createRandomEnemyKind seed)
             returnTuple = ([fst newEnem], snd newEnem)
             difficultyMultiplier = difficulty + multiplier
             multiplier = round (multiplierfloat/multiplierIncrement)
 
 getReward :: [Enemy] -> Score
 getReward [] = Score 0
-getReward (x:xs) = (reward x) `additionScore` (getReward xs)
+getReward (x:xs) = (reward x) `iAdd` (getReward xs)
 
 updatedPlayerWeapon :: Player -> Float -> Player
 updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
@@ -179,3 +188,4 @@ createParticles [] = []
 createParticles (x:xs) = newParticle : createParticles xs
     where projectilePosition  = getPos x
           newParticle         = standardParticle projectilePosition
+

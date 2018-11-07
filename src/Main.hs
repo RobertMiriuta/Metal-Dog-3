@@ -1,3 +1,4 @@
+-- main runs the program with the initial game state
 module Main where
 
 import Controller
