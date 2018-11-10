@@ -32,44 +32,23 @@ viewPure game
         renderedplayerShip  = renderPlayer currentPlayer
         renderedprojectiles = renderProjectiles listOfProjectiles
         renderedParticles   = renderParticles listOfParticles
-        scr                 = currentScore game
+        playerscore         = currentScore game
         renderedenemies     = renderEnemies listOfEnemies
-        activeArea          = renderActiveArea
-        scorePic            = scale 0.15 0.15.color orange.text $ show scr
-        score               = translate (halfSizeX-200) ((-halfSizeY)+20) scorePic
+        scorePic            = scale 0.15 0.15.color orange.text $ show playerscore
+        translatedScorePic  = translate (halfSizeX-200) ((-halfSizeY)+20) scorePic
         pausePic            = scale 0.5 0.5.color orange.text $ show Paused
-        pause               = translate (-halfSizeX) (halfSizeY-60) pausePic
+        translatedPausePic  = translate (-halfSizeX) (halfSizeY-60) pausePic
         gameOverPic         = scale 1.0 1.0.color orange.text $ show GameOver
         gameover            = translate (-halfSizeX) (-50.0) gameOverPic 
         scoreboard          = drawScoreboard (highscore game)
-        pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score])
-        picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [activeArea] ++ [score] ++ [pause])
-        picsGameOver        = pictures ([gameover] ++ [score] ++ [scoreboard])
-
-renderActiveArea :: Picture
-renderActiveArea    = Pictures [boundary,axis]
-  where halfSizeX   = fst windowSizeFloat/2
-        halfSizeY   = snd windowSizeFloat/2
-        leftTop     = (-halfSizeX, halfSizeY)
-        rightTop    = (halfSizeX, halfSizeY)
-        rightBottom = (halfSizeX, -halfSizeY)
-        leftBottom  = (-halfSizeX, -halfSizeY)
-        boundary    = color yellow $ Line [leftTop, rightTop, rightBottom, leftBottom, leftTop]
-        axis        = color yellow $ Line [(0,0), (0,halfSizeY), (0,0), (-halfSizeX, 0), (0,0), (0,-halfSizeY), (0,0), (halfSizeX, 0)]
+        pics                = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [translatedScorePic])
+        picsPaused          = pictures ([renderedplayerShip] ++ renderedprojectiles ++ renderedenemies ++ renderedParticles ++ [translatedScorePic] ++ [translatedPausePic])
+        picsGameOver        = pictures ([gameover] ++ [translatedScorePic] ++ [scoreboard])
 
 renderPlayer :: Player -> Picture
-renderPlayer player = Pictures[translate xTrans yTrans $ drawPlayer player, drawHitBox player]
+renderPlayer player = translate xTrans yTrans $ drawPlayer player
   where xTrans = xP (getPos player)
         yTrans = yP (getPos player)
-
--- used for programming purposes, won't be used in final release
-drawHitBox :: Moveable a => a -> Picture
-drawHitBox a = color blue $ Line [(xP ptTopLeft, yP ptTopLeft), ptTopRight, (xP ptBottomRight, yP ptBottomRight), ptBottomLeft, (xP ptTopLeft, yP ptTopLeft)]
-  where ptTopLeft       = topLeft (getHitbox a)
-        ptTopRight      = (xP ptBottomRight, yP ptTopLeft)
-        ptBottomRight   = bottomRight (getHitbox a)
-        ptBottomLeft    = (xP ptTopLeft, yP ptBottomRight)
-
 
 drawScoreboard :: [Highscore] -> Picture
 drawScoreboard []           = scale 1.0 1.0.color orange.text $ show "nothing"
@@ -97,14 +76,14 @@ renderParticles (x:xs) = translate particlepositionX particlepositionY renderedP
 
 renderProjectiles :: [Projectile] -> [Picture]
 renderProjectiles [] = []
-renderProjectiles (x:xs) = Pictures[translate projectilepositionX projectilepositionY drawProjectile, drawHitBox x] : renderProjectiles xs
+renderProjectiles (x:xs) = translate projectilepositionX projectilepositionY drawProjectile : renderProjectiles xs
   where projectilePosition  = getPos x
         projectilepositionX = xP projectilePosition
         projectilepositionY = yP projectilePosition
 
 renderEnemies :: [Enemy] -> [Picture]
 renderEnemies [] = []
-renderEnemies (x:xs) = Pictures[translate enemyPositionX enemyPositionY (drawEnemy (enemyKind x)) , drawHitBox x] : renderEnemies xs
+renderEnemies (x:xs) = translate enemyPositionX enemyPositionY (drawEnemy (enemyKind x)) : renderEnemies xs
   where enemyPosition  = getPos x
         enemyPositionX = xP enemyPosition
         enemyPositionY = yP enemyPosition

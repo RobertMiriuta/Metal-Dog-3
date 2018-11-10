@@ -34,10 +34,12 @@ enemyColor = green
 amountEnemyTypes :: Int
 amountEnemyTypes = 5
 
--- starting difficulty
+-- starting difficulty, which means 10 enemies can be on the screen at the same time.
 difficulty :: Int
 difficulty = 10
 
+-- Every second the difficulty increases with this multiplier, 
+--that translate to one extra enemy spawning per second
 multiplierIncrement :: Float
 multiplierIncrement = 1.0
 
@@ -220,9 +222,9 @@ standardParticle position = Prtcl 0.0 0.5 position True
 
 particlePicture :: Float -> Picture
 particlePicture age = translate halfsize (-halfsize) $ rectangleSolid size size
-  where halfsize = standardProjectileSizeFloat / 4
-        sumthing = age * standardProjectileSizeFloat
-        size = standardProjectileSizeFloat - sumthing
+  where halfsize       = standardProjectileSizeFloat / 4
+        shrinkFactor   = age * standardProjectileSizeFloat
+        size           = standardProjectileSizeFloat - shrinkFactor
 
 --initial game values
 startingPlayer :: String -> Player

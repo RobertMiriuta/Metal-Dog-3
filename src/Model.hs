@@ -124,6 +124,7 @@ insertProjectileIntoTuple p (projectiles, enemies) = (p:projectiles, enemies)
 insertEnemyIntoTuple :: Enemy -> ([Enemy], Player) -> ([Enemy], Player)
 insertEnemyIntoTuple e (enemies, player) = (e:enemies, player)
 
+--Calculates if a projectile hit an enemy
 didProjectileHitEnemies :: Projectile -> [Enemy] -> [Enemy]
 didProjectileHitEnemies _ [] = []
 didProjectileHitEnemies p (x:xs)
@@ -131,6 +132,7 @@ didProjectileHitEnemies p (x:xs)
   |otherwise = x : didProjectileHitEnemies p xs
     where isHit = isHitBy p x
 
+--loops over pressed keys, fires a projectile when a space is found.
 fireBullet :: Player -> [SpecialKey] -> ([Projectile], Player)
 fireBullet player [] = ([], player)
 fireBullet player (x:xs)
@@ -184,9 +186,11 @@ generateEnemy player seed xs multiplierfloat
             difficultyMultiplier = difficulty + multiplier
             multiplier = round (multiplierfloat/multiplierIncrement)
 
+--Calculates the reward based on a list of enemies
 getReward :: [Enemy] -> Score
 getReward = foldr (iAdd . reward) (Score 0)
 
+--Updates the players' weapon.
 updatedPlayerWeapon :: Player -> Float -> Player
 updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
   where oldWeapon   = activeWeapon player
@@ -194,6 +198,7 @@ updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
         newTime     = oldTime + time
         newWeapon   = oldWeapon {passedTime = newTime}
 
+--Creates particles based on the projectiles
 createParticles :: [Projectile] -> [Particle]
 createParticles [] = []
 createParticles (x:xs) = newParticle : createParticles xs
