@@ -42,7 +42,7 @@ main = do  ran <- getStdGen
                                 view                      -- View function
                                 input                     -- Event function
                                 step                      -- Step function
-            else do playIO (InWindow "Metal Dog 3" windowSizeInt (0, 0)) -- Or FullScreen
+            else      playIO (InWindow "Metal Dog 3" windowSizeInt (0, 0)) -- Or FullScreen
                                 black                     -- Background color
                                 30                        -- Frames per second
                                 (initialState ran nameGiven [])     -- Initial state

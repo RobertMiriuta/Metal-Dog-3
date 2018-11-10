@@ -3,7 +3,7 @@ module Weapon where
   import Projectile
   import GenericTypes
 
-  data Weapon = Wpn {createProjectile::(Point -> Projectile),
+  data Weapon = Wpn {createProjectile::Point -> Projectile,
                      passedTime :: Float,
                      rechargeTime::Float}
 

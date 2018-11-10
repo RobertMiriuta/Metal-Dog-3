@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 -- GenericTypes contains all the base data types and type classes which are
 -- being used to make calculations in our game
@@ -21,22 +20,13 @@ data Hitbox = HBox {topLeft::Point, bottomRight::Point}
     deriving (Show, Eq)
 
 data Highscore = HScore {name :: String, score :: Int} 
-    deriving (Eq, Show)
+    deriving (Eq, Show, Generic)
 
 instance Ord Highscore where
   (HScore _ score1) `compare` (HScore _ score2) = score1 `compare` score2
 
-
-instance FromJSON Highscore where
- parseJSON (Object v) =
-    HScore <$> v .: "name" <*> v .: "score"
-
-instance ToJSON Highscore where
- toJSON (HScore name score) =
-    object [ "name"  .= name
-           , "score"   .= score
-           ]
-
+instance FromJSON Highscore
+instance ToJSON Highscore
 
 newtype Score = Score Int
     deriving (Show, Eq , Generic)
@@ -92,10 +82,6 @@ class Mathable a where
   iSub :: a -> a -> a
   iMultScalar :: a -> Float -> a
 
--- The player and the enemies are damageable, though this class is currently
--- not being used
-
-
 calcSpeedToPoint :: Moveable a => a -> Point -> Speed
 calcSpeedToPoint a pt = Spd (xP newSpeedVec) (yP newSpeedVec)
   where bigVector = iSub pt (getPos a)
@@ -112,7 +98,7 @@ getSpeedVectorMagnitude a = sqrt (xSpd * xSpd + ySpd * ySpd)
 
 -- multiplies a given directional vector with the speed of an object
 multVectorSpeed :: Vector -> Speed -> Vector
-multVectorSpeed vec speed = Vctr ((uV vec) * (speedPerTickX speed)) ((vV vec) * (speedPerTickY speed))
+multVectorSpeed vec speed = Vctr (uV vec * speedPerTickX speed) (vV vec * speedPerTickY speed)
 
 -- basic mathematical operations
 instance Mathable Point where
@@ -131,7 +117,7 @@ instance Mathable Score where
   iAdd (Score a) (Score b)     = Score (a+b)
   iSub (Score a) (Score b)     = Score (a-b)
   iMult (Score a) (Score b)    = Score (a*b)
-  iMultScalar (Score a) scalar = Score (a*(round scalar))
+  iMultScalar (Score a) scalar = Score (a*round scalar)
 
 instance Mathable Speed where
   iAdd (Spd a b) (Spd c d)     = Spd (a+c) (b+d)

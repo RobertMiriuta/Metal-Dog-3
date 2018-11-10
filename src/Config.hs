@@ -52,7 +52,7 @@ enemyFireworkHealth :: Int
 enemyFireworkHealth = 1
 
 enemyFireworkSpeed :: Speed
-enemyFireworkSpeed = (Spd (-150.0) 0.0)
+enemyFireworkSpeed = Spd (-150.0) 0.0
 
 enemyFireworkReward :: Score
 enemyFireworkReward = Score 50
@@ -89,7 +89,7 @@ enemyCat pt = Enemy Cat enemyCatHealth pt newHitbox enemyCatSpeed enemyCatReward
 
 --Postman
 enemyPostmanPicture :: Picture
-enemyPostmanPicture = color enemyColor $ Pictures [(translate 10 (-5) $ Circle 5),
+enemyPostmanPicture = color enemyColor $ Pictures [translate 10 (-5) $ Circle 5,
                                                    Polygon[(0,-10),(0,-25),(3,-25),(3,-15),(5,-15),(5,-35),(8,-35),(8,-25),(12,-25),
                                                     (12,-35),(15,-35),(15,-15),(17,-15),(17,-25),(20,-25),(20,-10)]]
 
@@ -114,8 +114,8 @@ enemyPostman pt = Enemy Postman enemyPostmanHealth pt newHitbox enemyPostmanSpee
 --Car
 enemyCarPicture :: Picture
 enemyCarPicture = color enemyColor $ Pictures [Polygon[(0,-5),(0,-10),(25,-10),(25,-5),(20,-5),(15,0),(10,0),(5,-5)],
-                                               (translate 8 (-10) $ Circle 3),
-                                               (translate 17 (-10) $ Circle 3)]
+                                               translate 8 (-10) $ Circle 3,
+                                               translate 17 (-10) $ Circle 3]
 
 enemyCarHealth :: Int
 enemyCarHealth = 1
@@ -163,8 +163,8 @@ playerPicture :: Picture
 playerPicture = Pictures[Polygon[(0,-10),(10,-20),(20,-20),(30,-10)], translate 15 (-10) $ scale 1 2 $ Circle 5]
 
 playerSpawnCoordinates :: Point
-playerSpawnCoordinates = (Pt spawnX spawnY)
-  where spawnX = (-(fst windowSizeFloat) / 2) + 50 --50 pixels off of the left border
+playerSpawnCoordinates = Pt spawnX spawnY
+  where spawnX = (-fst windowSizeFloat / 2) + 50 --50 pixels off of the left border
         spawnY = 0.0 --middle of the screen
 
 standardPlayerSpeed :: Speed
@@ -172,7 +172,7 @@ standardPlayerSpeed = Spd 6.0 6.0
 
 standardPlayerHitbox :: Hitbox
 standardPlayerHitbox = HBox (iAdd spawn (Pt 0.0 10.0)) (iAdd spawn (Pt 30.0 (-10.0)))
-  where spawnX = (-(fst windowSizeFloat) / 2) + 50
+  where spawnX = (-fst windowSizeFloat / 2) + 50
         spawnY = 0.0
         spawn  = Pt spawnX spawnY
 
@@ -226,7 +226,7 @@ particlePicture age = translate halfsize (-halfsize) $ rectangleSolid size size
 
 --initial game values
 startingPlayer :: String -> Player
-startingPlayer name = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon name
+startingPlayer = Plyr playerSpawnCoordinates standardPlayerSpeed standardPlayerHitbox standardPlayerHealth "alive" standardPlayerWeapon
 
 startingProjectiles = []
 startingEnemies = [enemyCar (Pt 150.0 0.0), enemyPostman (Pt 0.0 0.0), enemyFirework (Pt 150.0 50.0) enemyFireworkSpeed]
@@ -237,4 +237,4 @@ startingGameTime = 0.0
 startingParticles = []
 
 initialGame :: StdGen -> String -> [Highscore] -> MetalDogGame
-initialGame seed playername highscore = Game (startingPlayer playername) startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime startingParticles highscore
+initialGame seed playername = Game (startingPlayer playername) startingProjectiles startingEnemies startingKeys seed startingScore startingState startingGameTime startingParticles

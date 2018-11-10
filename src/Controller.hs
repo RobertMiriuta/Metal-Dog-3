@@ -18,7 +18,7 @@ step time game
   |isDead                = gameOverLogic gameOverGame
   |isPlaying             = return updatedGame
   |otherwise             = return game
-    where isPlaying                       = (gameState game) == Playing
+    where isPlaying                       = gameState game == Playing
           playerStatus                    = status currentPlayer
           isDead                          = playerStatus == "dead"
           listOfEnemies                   = enemies game
@@ -38,7 +38,7 @@ step time game
           allProjectiles                  = listOfProjectiles ++ newProjectiles
           newListOfParticles              = createParticles allProjectiles ++ remainingParticles
           remainingObjects                = didEnemyGetHit movedProjectiles movedEnemies
-          remaningProjectiles             = (fst remainingObjects) ++ newProjectiles
+          remaningProjectiles             = fst remainingObjects ++ newProjectiles
           remainingEnemiesAfterKills      = snd remainingObjects
           damagedPlayerEnemies            = didPlayerGetHit remainingEnemiesAfterKills movedPlayer
           remainingEnemiesAfterCollision  = fst damagedPlayerEnemies
@@ -48,7 +48,7 @@ step time game
           generatedSeed                   = snd enemySeedList
           enemySeedList                   = generateEnemy currentPlayer (seed game) remainingEnemiesAfterCollision updatedGameTime
           updatedEnemyList                = remainingEnemiesAfterCollision ++ generatedEnemies
-          updatedScore                    = (currentScore game) `iAdd` (getReward deadEnemies)
+          updatedScore                    = currentScore game `iAdd` getReward deadEnemies
           oldGameTime                     = gameTime game
           updatedGameTime                 = oldGameTime + time
           updatedGame                     = game {player = remainingPlayer, enemies = updatedEnemyList, projectiles = remaningProjectiles, currentScore = updatedScore, seed = generatedSeed, gameTime = updatedGameTime, particles = newListOfParticles}
@@ -72,22 +72,22 @@ inputKey (EventKey (SpecialKey key) Down _ _) game = case key of
               newKeys = key : originalKeys
 inputKey (EventKey (SpecialKey key) Up _ _) game = case key of
         -- Handles the events for the arrow keys
-        KeySpace -> game {keysPressed = removeSpace}
-        KeyUp    -> game {keysPressed = removeUp}
-        KeyDown  -> game {keysPressed = removeDown}
-        KeyLeft  -> game {keysPressed = removeLeft}
-        KeyRight -> game {keysPressed = removeRight}
+        KeySpace -> removeKeyFromGame KeySpace game
+        KeyUp    -> removeKeyFromGame KeyUp game
+        KeyDown  -> removeKeyFromGame KeyDown game
+        KeyLeft  -> removeKeyFromGame KeyLeft game
+        KeyRight -> removeKeyFromGame KeyRight game
         _ -> game
-        where originalKeys = keysPressed game
-              newKeys a   = filter (\x -> x /= a) originalKeys
-              removeSpace = newKeys KeySpace
-              removeUp    = newKeys KeyUp
-              removeDown  = newKeys KeyDown
-              removeLeft  = newKeys KeyLeft
-              removeRight = newKeys KeyRight
 inputKey (EventKey (Char 'p') Down _ _) game
   |isPlaying = game {gameState = Paused}
   |otherwise = game {gameState = Playing}
-    where isPlaying = (gameState game) == Playing
+    where isPlaying = gameState game == Playing
 inputKey (EventKey (Char 'r') Down _ _) game = initialState (seed game) (Player.name (player game)) (highscore game) --Resets the game
 inputKey _ game = game -- Otherwise keep the same
+
+
+removeKeyFromGame :: SpecialKey -> MetalDogGame -> MetalDogGame
+removeKeyFromGame key game = game {keysPressed = updatedKeys}
+  where originalKeys = keysPressed game
+        newKeys a   = filter (/= a) originalKeys
+        updatedKeys = newKeys key

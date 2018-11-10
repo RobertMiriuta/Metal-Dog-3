@@ -6,6 +6,7 @@ import GenericTypes
 import Player
 import Enemy
 import Weapon
+import Data.Ord
 import Parser
 import Particle
 import Projectile
@@ -16,7 +17,7 @@ import Data.List
 import Graphics.Gloss.Interface.Pure.Game (SpecialKey (KeyUp, KeyDown, KeyLeft, KeyRight, KeySpace))
 
 initialState :: StdGen -> String -> [Highscore] -> MetalDogGame
-initialState gen playername highscore = initialGame gen playername highscore
+initialState = initialGame
 
 gameOverLogic :: MetalDogGame -> IO MetalDogGame
 gameOverLogic game = do updateFile <- writeJsonFile newhighscore
@@ -27,7 +28,7 @@ gameOverLogic game = do updateFile <- writeJsonFile newhighscore
                                 currenthighscorelist = highscore game
                                 playerhighscoreentry = HScore playername playerscore
                                 checkedhighscore     = filter (/= playerhighscoreentry) currenthighscorelist
-                                newhighscore         = reverse (sort (playerhighscoreentry : checkedhighscore))
+                                newhighscore         = sortOn Data.Ord.Down (playerhighscoreentry : checkedhighscore)
 
 movePlayer :: Player -> [SpecialKey] -> Player
 movePlayer player [] = player
@@ -40,11 +41,11 @@ movePlayer player (key:listOfKeys)
 -- moves player 1 frame forward in given direction
 repositionPlayer :: Player -> SpecialKey -> Player
 repositionPlayer player x
-  |x == KeyUp     = movePlayerWithVector player (0.0, 1.0)
-  |x == KeyDown   = movePlayerWithVector player (0.0, (-1.0))
-  |x == KeyLeft   = movePlayerWithVector player ((-1.0), 0.0)
-  |x == KeyRight  = movePlayerWithVector player (1.0, 0.0)
-  |otherwise = player
+  |x == KeyUp     = movePlayerWithVector player (0.0,  1.0)
+  |x == KeyDown   = movePlayerWithVector player (0.0, -1.0)
+  |x == KeyLeft   = movePlayerWithVector player (-1.0, 0.0)
+  |x == KeyRight  = movePlayerWithVector player (1.0,  0.0)
+  |otherwise      = player
 
 -- moves player with a given movement vector
 movePlayerWithVector :: Player -> (Float, Float) -> Player
@@ -56,53 +57,64 @@ moveProjectiles _ [] = []
 moveProjectiles time (x:xs)
   |canBeRemoved       = moveProjectiles time xs
   |otherwise          = updatedProjectile : moveProjectiles time xs
-  where projectilePosition = getPos x
-        projectilePositionY = yP projectilePosition
+  where projectilePosition   = getPos x
+        projectilePositionY  = yP projectilePosition
         projectileMoveVector = Vctr time projectilePositionY
-        movedProjectile = move x projectileMoveVector
-        oldAge = Projectile.age x
-        newAge = oldAge + time
-        updatedProjectile = movedProjectile {Projectile.age = newAge}
-        canBeRemoved = isOutOfBounds movedProjectile windowSizeFloat
+        movedProjectile      = move x projectileMoveVector
+        oldAge               = Projectile.age x
+        newAge               = oldAge + time
+        updatedProjectile    = movedProjectile {Projectile.age = newAge}
+        canBeRemoved         = isOutOfBounds movedProjectile windowSizeFloat
 
 moveEnemies :: Float -> [Enemy] -> [Enemy]
 moveEnemies _ [] = []
 moveEnemies time (x:xs)
   |canBeRemoved       = moveEnemies time xs
   |otherwise          = movedEnemy: moveEnemies time xs
-  where enemyPosition = getPos x
-        enemyPositionX = xP enemyPosition
-        enemyPositionY = yP enemyPosition
+  where enemyPosition   = getPos x
+        enemyPositionX  = xP enemyPosition
+        enemyPositionY  = yP enemyPosition
         enemyMoveVector = Vctr time time
-        movedEnemy = move x enemyMoveVector
-        canBeRemoved = isOutOfBounds movedEnemy windowSizeFloat
+        movedEnemy      = move x enemyMoveVector
+        canBeRemoved    = isOutOfBounds movedEnemy windowSizeFloat
 
 didPlayerGetHit :: [Enemy] -> Player -> ([Enemy], Player)
 didPlayerGetHit [] player = ([], player)
 didPlayerGetHit (x:xs) player
-  |isHit && (remainingPlayer == Nothing) = (xs, deadPlayer)
-  |isHit && (remainingPlayer == (Just damagedPlayer)) = didPlayerGetHit xs (damagedPlayer {status = "hit"})
-  |otherwise = insertEnemyIntoTuple x (didPlayerGetHit xs player)
-    where isHit = isHitBy player x
-          currentHealth = getHealth player
-          damagedHealth = currentHealth - 1
-          damagedPlayer = player {Player.health = damagedHealth}
+  |isHit && checkIfPlayerIsDead remainingPlayer                   = (xs, deadPlayer)
+  |isHit && checkIfIsDamagedPlayer remainingPlayer damagedPlayer  = didPlayerGetHit xs (damagedPlayer {status = "hit"})
+  |otherwise                                                      = insertEnemyIntoTuple x (didPlayerGetHit xs player)
+    where isHit           = isHitBy player x
+          currentHealth   = getHealth player
+          damagedHealth   = currentHealth - 1
+          damagedPlayer   = player {Player.health = damagedHealth}
           remainingPlayer = takeDamage player 1
-          deadPlayer = player {Player.health = 0, status = "dead"}
+          deadPlayer      = player {Player.health = 0, status = "dead"}
 
+checkIfIsDamagedPlayer :: Maybe Player -> Player -> Bool
+checkIfIsDamagedPlayer Nothing _                = False
+checkIfIsDamagedPlayer justplayer damagedPlayer = justplayer == Just damagedPlayer
+
+checkIfPlayerIsDead :: Maybe Player -> Bool
+checkIfPlayerIsDead Nothing = True
+checkIfPlayerIsDead _       = False
+
+
+--Traverses the projectiles, if a projectile did not kill an enemy, continue on the list,
+--and add (insert) the projectile to the result. B 
 didEnemyGetHit :: [Projectile] -> [Enemy] -> ([Projectile], [Enemy])
 didEnemyGetHit [] xs = ([], xs)
-didEnemyGetHit [lastprojectile] lOE
-  | areEnemiesKilled = ([], enemiesStillAlive)
-  | otherwise = ([lastprojectile], enemiesStillAlive)
-    where enemiesStillAlive = didProjectileHitEnemies lastprojectile lOE
-          areEnemiesKilled = (length enemiesStillAlive /= length lOE)
 didEnemyGetHit xs [] = (xs, [])
+didEnemyGetHit [lastprojectile] lOE
+  | areEnemiesKilled  = ([], enemiesStillAlive)
+  | otherwise         = ([lastprojectile], enemiesStillAlive)
+    where enemiesStillAlive = didProjectileHitEnemies lastprojectile lOE
+          areEnemiesKilled  = length enemiesStillAlive /= length lOE
 didEnemyGetHit (projectile:nextProjectile:lOP) lOE
-  | areEnemiesKilled = didEnemyGetHit (nextProjectile:lOP) enemiesStillAlive
-  | otherwise = insertProjectileIntoTuple projectile (didEnemyGetHit (nextProjectile:lOP) enemiesStillAlive)
+  | areEnemiesKilled  = didEnemyGetHit (nextProjectile:lOP) enemiesStillAlive
+  | otherwise         = insertProjectileIntoTuple projectile (didEnemyGetHit (nextProjectile:lOP) enemiesStillAlive)
     where enemiesStillAlive = didProjectileHitEnemies projectile lOE
-          areEnemiesKilled = (length enemiesStillAlive /= length lOE)
+          areEnemiesKilled  = length enemiesStillAlive /= length lOE
 
 -- helper function for removal loop
 insertProjectileIntoTuple :: Projectile -> ([Projectile], [Enemy]) -> ([Projectile], [Enemy])
@@ -115,7 +127,7 @@ insertEnemyIntoTuple e (enemies, player) = (e:enemies, player)
 didProjectileHitEnemies :: Projectile -> [Enemy] -> [Enemy]
 didProjectileHitEnemies _ [] = []
 didProjectileHitEnemies p (x:xs)
-  |isHit = didProjectileHitEnemies p xs
+  |isHit     = didProjectileHitEnemies p xs
   |otherwise = x : didProjectileHitEnemies p xs
     where isHit = isHitBy p x
 
@@ -126,25 +138,25 @@ fireBullet player (x:xs)
   |otherwise                    = fireBullet player xs
     where currentWeapon             = activeWeapon player
           usedWeapon                = currentWeapon {passedTime = 0.0}
-          readyToFire               = (passedTime currentWeapon) > (rechargeTime currentWeapon)
+          readyToFire               = passedTime currentWeapon > rechargeTime currentWeapon
           updatedPlayer             = player {activeWeapon = usedWeapon}
-          firingPoint               = Pt ((xP (getSize player)) - 4) ((yP (getSize player)) + 9)
+          firingPoint               = Pt (xP (getSize player) - 4) (yP (getSize player) + 9)
           playerWeapon              = activeWeapon player
-          createProjectileAt point  = (createProjectile playerWeapon) point
+          createProjectileAt point  = createProjectile playerWeapon point
 
 -- random enemy generation
 
 createRandomEnemyKind :: StdGen -> (EnemyKind, StdGen)
 createRandomEnemyKind seed
-    | num == 0 = (Firework, newGen)
-    | num == 1 = (Cat, newGen)
-    | num == 2 = (Postman, newGen)
-    | num == 3 = (Car, newGen)
+    | num == 0  = (Firework, newGen)
+    | num == 1  = (Cat, newGen)
+    | num == 2  = (Postman, newGen)
+    | num == 3  = (Car, newGen)
     | otherwise = (VacuumCleaner, newGen)
       where ranGen1 = randomR (0, amountEnemyTypes) seed
-            newGen = snd ranGen1
-            numF = abs (fst ranGen1)
-            num = numF - (numF `mod` 1)
+            newGen  = snd ranGen1
+            numF    = abs (fst ranGen1)
+            num     = numF - (numF `mod` 1)
 
 --Player is passed to get position information for heat seaking missiles
 createRandomEnemy :: Player -> (EnemyKind, StdGen) -> (Enemy, StdGen)
@@ -153,9 +165,9 @@ createRandomEnemy player (kind, seed)
     | kind == Cat          = (enemyCat ranPos, newSeed)
     | kind == Postman      = (enemyPostman ranPos, newSeed)
     | kind == Car          = (enemyCar ranPos, newSeed)
-    | otherwise = (enemyVacuumCleaner ranPos, newSeed)
+    | otherwise            = (enemyVacuumCleaner ranPos, newSeed)
       where ranGen = randomR spawnBoundY seed
-            posX = (fst windowSizeFloat)/2
+            posX = fst windowSizeFloat/2
             ranPosY = fst ranGen
             ranPos = Pt posX ranPosY
             newSeed = snd ranGen
@@ -173,15 +185,14 @@ generateEnemy player seed xs multiplierfloat
             multiplier = round (multiplierfloat/multiplierIncrement)
 
 getReward :: [Enemy] -> Score
-getReward [] = Score 0
-getReward (x:xs) = (reward x) `iAdd` (getReward xs)
+getReward = foldr (iAdd . reward) (Score 0)
 
 updatedPlayerWeapon :: Player -> Float -> Player
 updatedPlayerWeapon player time = player {activeWeapon = newWeapon}
-  where oldWeapon = activeWeapon player
-        oldTime = passedTime oldWeapon
-        newTime = oldTime + time
-        newWeapon = oldWeapon {passedTime = newTime}
+  where oldWeapon   = activeWeapon player
+        oldTime     = passedTime oldWeapon
+        newTime     = oldTime + time
+        newWeapon   = oldWeapon {passedTime = newTime}
 
 createParticles :: [Projectile] -> [Particle]
 createParticles [] = []
